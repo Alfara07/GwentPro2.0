@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Options.cs" />
+    <Compile Include="Assets\Scripts\LogError.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

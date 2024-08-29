@@ -57,7 +57,38 @@ namespace Compiler
             }
         }
 
+        //Método para verificar que exite la clase de carta dada
+        public CardClass CheckCardClass(string type)
+        {
+            foreach(CardClass c in cardclass)
+            {
+                if(c.ToString() == type)
+                { return c;}
+            }
+            return CardClass.None;
+        }
 
+        //Método para verificar que exite la clase de ataque dada
+        public AttackClass CheckAttackClass(string type)
+        {
+            foreach(AttackClass c in attackclass)
+            {
+                if(c.ToString() == type)
+                { return c;}
+            }
+            return AttackClass.None;
+        }
+
+        //Método para verificar que exite la clase de posición dada
+        public string CheckSourceClass(string type)
+        {
+            foreach(SourceClass c in Source)
+            {
+                if (c.ToString() == type)
+                { return c.ToString(); }
+            }
+            return " ";
+        }
     }
 
     //Variables por definir 
