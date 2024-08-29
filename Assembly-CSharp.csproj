@@ -59,6 +59,7 @@
     <Compile Include="Assets\Scripts\LogError.cs" />
     <Compile Include="Assets\Scripts\Options.cs" />
     <Compile Include="Assets\Scripts\CardManager.cs" />
+    <Compile Include="Assets\Scripts\CardCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

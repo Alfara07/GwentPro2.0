@@ -10,7 +10,7 @@ namespace Compiler
         public string errorclass;
         public int errorline;
 
-        public LogError(string errorclass, int errorline)
+        public LogError(int errorline, string errorclass)
         {
             this.errorclass = errorclass;
             this.errorline = errorline;
