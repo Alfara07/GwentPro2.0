@@ -37,7 +37,7 @@ namespace Compiler
         }
 
         //Método para verificar la validez de las variables
-        public VariableClass LexicalVerification(string Text) 
+        public VariableClass LexicalVerification(string Text)
         {
             if (Regex.IsMatch(Text, @"^[\'][a-zA-Z' '0-9]*'"))
             {

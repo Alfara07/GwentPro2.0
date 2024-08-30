@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
+using UnityEditor;
 
 namespace Compiler
 {
@@ -11,6 +14,33 @@ namespace Compiler
         public List<LogError> error = new();
         readonly Options options = new();
 
+        //Función madre, revisa la sintaxis en general
+        public void SintaxCheck(string Code)
+        {
+            string[] Lines = Code.Split('\n');
+            int NLine = 1;
+            for (int i = 0; i < Lines.Length; i++)
+            {
+                Lines[i] = RemoveSpace(Lines[i]);
+            }
+            foreach (string Line in Lines)
+            {
+                if (Regex.IsMatch(Line, @"^string|<#texto\s+[a-z](1,15)(\s+:\s+[a-z](1,15)')*;$"))
+                {
+                    StringMaker(Line, NLine);
+                }
+                else if (Regex.IsMatch(Line, @"^number|<#real\s+[a-z](1,15)(\s+:\s+\d(0,32000))*;$"))
+                {
+                    NumberMaker(Line, NLine);
+                }
+                if (Regex.IsMatch(Line, @"^bool|<#boolean\s+[a-z](1,15)(\s+:\s+(true|false))*;$"))
+                {
+                    BoolMaker(Line, NLine);
+                }
+
+            }
+        }
+
         //Método para limpiar el Compiler
         public void CleanCompiler()
         {
@@ -19,7 +49,198 @@ namespace Compiler
             NumberValue.Clear();
             BooleanValue.Clear();
         }
-        
+
+        //Método que crea variables tipo number
+        private void NumberMaker(string Line, int Nline)
+        {
+            if (EndVerification(Line, ';'))
+            {
+                if (Exist(Line, "="))
+                {
+                    string[] separates = Line.Split('=');
+                    string[] check = separates[0].Split(' ');
+                    string[] end = separates[1].Split(';');
+                    if (check.Length >= 2 && options.LexicalVerification(check[1]) == VariableClass.Var && check[0] == "number")
+                    {
+                        string num = ArithmeticOperations(end[0], Nline);
+                        if (num != " ")
+                        {
+                            NumberValue[check[1]] = num;
+                        }
+
+                    }
+
+                    else
+                    {
+                        error.Add(new LogError(Nline, ErrorClass.ERRORcorrectDeclaration));
+                    }
+                }
+                else
+                {
+                    error.Add(new LogError(Nline, ErrorClass.ERRORassign));
+                }
+            }
+            else
+            {
+                error.Add(new LogError(Nline, ErrorClass.ERRORclouse));
+            }
+        }
+
+        //Mtodo que crea variables de tipo string
+        public bool StringMaker(string Code, int Nline)
+        {
+            if (EndVerification(Code, ';'))
+            {
+                if (Exist(Code, "="))
+                {
+                    string[] Sentencias = Code.Split('=');
+                    string[] var = Sentencias[0].Split(' ');
+                    if (options.LexicalVerification(var[1]) != VariableClass.Var || var[0] != "string") 
+                    {
+                        error.Add(new LogError(Nline, ErrorClass.ERRORcorrectDeclaration));
+                        return false;
+                    }
+                    string[] declarate = Sentencias[1].Split(';');
+                    declarate[0] = RemoveSpace(declarate[0]);
+                    if (options.LexicalVerification(declarate[0]) == VariableClass.Var)
+                    {
+                        declarate[0] = VariableValue(StringValue, declarate[0]);
+                    }
+                    string notNull = CreateString(declarate[0], Nline);
+                    if (notNull != " ")
+                    {
+                        StringValue[var[1]] = notNull;
+                        return true;
+                    }
+                    else
+                    {
+                        error.Add(new LogError(Nline, ErrorClass.ERRORvalue));
+                        return false;
+                    }
+                }
+                else
+                {
+                    error.Add(new LogError(Nline, ErrorClass.ERRORassign));
+                    return false;
+                }
+            }
+            else
+            {
+                error.Add(new LogError(Nline, ErrorClass.ERRORclouse));
+                return false;
+            }
+        }
+
+        //Mtodo que crea variables de tipo bool
+        private void BoolMaker(string Line, int Nline)
+        {
+            if (EndVerification (Line, ';'))
+            {
+                if (Exist(Line, "="))
+                {
+                    string[] separavar = Line.Split('=');
+                    string[] Verify = separavar[0].Split(' ');
+                    string[] ent = separavar[1].Split(';');
+                    if (Verify.Length >= 2 && options.LexicalVerification(Verify[1]) == VariableClass.Var && Verify[0] == "bool")
+                    {
+                        try
+                        {
+                            bool var;
+                            var = bool.Parse(ent[0]);
+                            BooleanValue[Verify[1]] = var.ToString();
+                        }
+                        catch (FormatException)
+                        {
+                            error.Add(new LogError(Nline, ErrorClass.ERRORvalue));
+
+                        }
+                    }
+                    else
+                    {
+                        error.Add(new LogError(Nline, ErrorClass.ERRORcorrectDeclaration));
+                    }
+                }
+                else
+                {
+                    error.Add(new LogError(Nline, ErrorClass.ERRORassign));
+                }
+            }
+            else
+            {
+                error.Add(new LogError(Nline, ErrorClass.ERRORclouse));
+            }
+        }
+
+        //Método para crear strings 
+        public string CreateString(string Code, int Nline)
+        {
+            Code = RemoveSpace(Code);
+            if (Exist(Code, "@"))
+            {
+                string[] var = Code.Split('@');
+                for (int i = 0; i < var.Length; i++)
+                {
+                    var[i] = RemoveSpace(var[i]);
+                    if (options.LexicalVerification(var[i]) == VariableClass.Var)
+                    {
+                        var[i] = VariableValue(StringValue, var[i]);
+                    }
+                }
+                if (Exist(Code, "@@"))
+                {
+                    int space = 0;
+                    for (int i = 0; i < var.Length; i++)
+                    {
+                        if (options.LexicalVerification(var[i]) == VariableClass.String)
+                        {
+                            space = 0;
+                        }
+                        if (i < var.Length - 1 && space < 1 && var[i] == "")
+                        {
+                            var[i] = "' '";
+                            space++;
+                        }
+                    }
+                }
+                foreach (string s in var)
+                {
+                    if (options.LexicalVerification(s) != VariableClass.String)
+                    {
+                        error.Add(new LogError(Nline, ErrorClass.ERRORvalue));
+                        return " ";
+                    }
+                }
+                string line = "";
+                foreach (string s in var)
+                {
+                    foreach (char c in s)
+                    {
+                        if (c != '\'')
+                        {
+                            line += c;
+                        }
+                    }
+                }
+                return line;
+            }
+            else if (options.LexicalVerification(Code) == VariableClass.String)
+            {
+                string line = "";
+                foreach (char c in Code)
+                {
+                    if (c != '\'')
+                    {
+                        line += c;
+                    }
+                }
+                return line;
+            }
+            else
+            {
+                return " ";
+            }
+        }
+
         //Método para comprobar el cierre de la línea
         public bool EndVerification(string Code, char end)
         {
