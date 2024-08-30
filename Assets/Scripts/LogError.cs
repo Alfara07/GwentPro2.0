@@ -33,5 +33,7 @@ namespace Compiler
         public const string ERRORcorrectDeclaration   = "Error011.Warning: The declaration is not corret";
         public const string ERRORunspecified          = "Error012.Warning: The variable is not corret";
         public const string ERRORincorrectDeclaration = "Error013.Warning: That property was used / thats not corret";
+        public const string ERROReffectAssign         = "Error014.Warning: => not found";
+        public const string ERRORforUndefined         = "Error014.Warning: The for declaration is not corret";
     }
 }

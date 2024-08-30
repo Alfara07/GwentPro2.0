@@ -11,6 +11,7 @@ namespace Compiler
         List<CardClass> cardclass = new(); 
         List<AttackClass> attackclass = new();
         List<SourceClass> Source = new();
+        List<TargetProperty> CardProperties = new();
 
         public Options() 
         {
@@ -89,6 +90,19 @@ namespace Compiler
             }
             return " ";
         }
+
+        public string CompareTargetProperty(string type)
+        {
+            foreach (TargetProperty s in Source)
+            {
+                if (s.ToString() == type)
+                {
+                    return s.ToString();
+                }
+            }
+
+            return " ";
+        }
     }
 
     //Variables por definir 
@@ -126,5 +140,13 @@ namespace Compiler
         deck,
         otherdeck,
         board
+    }
+    public enum TargetProperty
+    {
+        Name,
+        Faction,
+        Power,
+        Type,
+        Owner
     }
 }

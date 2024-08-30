@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text.RegularExpressions;
 using UnityEditor;
+using UnityEngine;
 
 namespace Compiler
 {
@@ -37,7 +39,15 @@ namespace Compiler
                 {
                     BoolMaker(Line, NLine);
                 }
-
+                if (Regex.IsMatch(Line, @"^card|<#definition\s+['{']*;$"))
+                {
+                    CardCreate(Lines, NLine);
+                }
+                if (error.Count != 0)
+                {
+                    break;
+                }
+                NLine++;
             }
         }
 
@@ -244,7 +254,7 @@ namespace Compiler
         //Método para comprobar el cierre de la línea
         public bool EndVerification(string Code, char end)
         {
-            if (Code[^1] == end)
+            if (Code.Length >= 1 && Code[^1] == end)
             {
                 return true;
             }
@@ -304,6 +314,32 @@ namespace Compiler
             return " ";
         }
 
+        //Metodo para los operadores dobles ++ -- 
+        public bool AddorSubtract(string code)
+
+        {
+            string[] num;
+            if (Exist(code, "++"))
+            {
+                num = code.Split("++");
+                if (NumberValue.ContainsKey(RemoveSpace(num[0])))
+                {
+                    NumberValue[RemoveSpace(num[0])] = (int.Parse(NumberValue[RemoveSpace(num[0])]) + 1).ToString();
+                    return true;
+                }
+            }
+            else if (Exist(code, "--"))
+            {
+                num = code.Split("++");
+                if (NumberValue.ContainsKey(RemoveSpace(num[0])))
+                {
+                    NumberValue[RemoveSpace(num[0])] = (int.Parse(NumberValue[RemoveSpace(num[0])]) - 1).ToString();
+                    return true;
+                }
+            }
+            return false;
+        }
+
         //Método para el desarrollo de operaciones aritmética
         public string ArithmeticOperations(string Code, int Nline)
         {
@@ -316,6 +352,9 @@ namespace Compiler
             {
                 return Code;
             }
+
+            //Verificar operador doble
+            else if (AddorSubtract(Code)) return VariableValue(NumberValue, Code);
 
             //Verifica si es una variable
             else if (options.LexicalVerification(Code) == VariableClass.Var)
@@ -533,6 +572,790 @@ namespace Compiler
                 error.Add(new LogError(Nline, ErrorClass.ERRORvalue));
                 return " ";
             }
+        }
+
+        //Método que realiza las comparaciones
+        private bool Compare(string Code, int Nline)
+        {
+            string[] numbers;
+            if (Exist(Code, "<="))
+            {
+                numbers = Code.Split("<=");
+                numbers[0] = ArithmeticOperations(numbers[0], Nline);
+                numbers[2] = ArithmeticOperations(numbers[2], Nline);
+                if (numbers[0] != " " && numbers[2] != " ")
+                {
+                    if (float.Parse(numbers[0]) == float.Parse(numbers[2])) return true;
+                    else if (float.Parse(numbers[0]) < float.Parse(numbers[2])) return true;
+                    else return false;
+                }
+            }
+            else if (Exist(Code, ">="))
+            {
+                numbers = Code.Split("<=");
+                numbers[0] = ArithmeticOperations(numbers[0], Nline);
+                numbers[2] = ArithmeticOperations(numbers[2], Nline);
+                if (numbers[0] != " " && numbers[2] != " ")
+                {
+                    if (float.Parse(numbers[0]) == float.Parse(numbers[2])) return true;
+                    else if (float.Parse(numbers[0]) > float.Parse(numbers[2])) return true;
+                    else return false;
+                }
+            }
+            else if (Exist(Code, ">"))
+            {
+                numbers = Code.Split('>', '=');
+                numbers[0] = ArithmeticOperations(numbers[0], Nline);
+                numbers[2] = ArithmeticOperations(numbers[2], Nline);
+                if (numbers[0] != " " && numbers[2] != " ")
+                {
+                    if (float.Parse(numbers[0]) > float.Parse(numbers[2])) return true;
+                    else return false;
+                }
+            }
+            else if (Exist(Code, "<"))
+            {
+                numbers = Code.Split('>', '=');
+                numbers[0] = ArithmeticOperations(numbers[0], Nline);
+                numbers[2] = ArithmeticOperations(numbers[2], Nline);
+                if (numbers[0] != " " && numbers[2] != " ")
+                {
+                    if (float.Parse(numbers[0]) < float.Parse(numbers[2])) return true;
+                    else return false;
+                }
+            }
+            return false;
+        }
+
+        //Método que define las cartas
+        private void CardCreate(string[] Code, int Nline)
+        {
+            string Type = " ";
+            string Name = " ";
+            string Faction = " ";
+            string Power = " ";
+            string Range = " ";
+            string onActivation = "*";
+            if (EndVerification(Code[Nline - 1], '{'))
+            {
+                while (Code[Nline - 1] != "}")
+                {
+                    if (Nline + 1 < Code.Length)
+                    {
+                        Nline++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                    Code[Nline - 1] = RemoveSpace(Code[Nline - 1]);
+                    if (Code[Nline - 1] != "")
+                    {
+                        string Definition = VerificateCard(Code[Nline - 1], Nline);
+                        if (Definition != " ")
+                        {
+                            string[] var = Definition.Split('-');
+                            //Verifica variable Name
+                            if (var[0] == "Name" && Name == " ")
+                            {
+                                Name = var[1];
+                            }
+                            //Verifica variable Faction
+                            else if (var[0] == "Faction" && Faction == " ")
+                            {
+                                Faction = var[1];
+                            }
+                            //Verifica variable Type
+                            else if (var[0] == "Type" && Type == " ")
+                            {
+                                Type = var[1];
+                            }
+                            //Verificar variable Power
+                            else if (var[0] == "Power" && Power == " ")
+                            {
+                                Power = var[1];
+                            }
+                            //Verifica variable Range
+                            else if (var[0] == "Range" && Range == " ")
+                            {
+                                for (int i = 1; i < var.Length; i++)
+                                {
+                                    Range += var[i] + "-";
+                                }
+                            }
+                            //Verificar definicion OnActivation
+                            else if (Definition == "OnActivation")
+                            {
+                                if (RemoveSpace(Code[Nline]) == "{")
+                                {
+                                    Nline++;
+                                    onActivation = VerificateOnActivation(Code, Nline);
+                                    if (onActivation != " ")
+                                    {
+                                        string[] on = onActivation.Split('*');
+                                        int linesAdd = on[1].Split('.').Length + 9;
+                                        Nline += linesAdd;
+                                    }
+                                }
+                                else
+                                {
+                                    error.Add(new LogError(Nline, ErrorClass.ERRORopenBrace));
+                                }
+                            }
+
+                            //Comprueba error
+                            else
+                            {
+                                error.Add(new LogError(Nline, ErrorClass.ERRORincorrectDeclaration));
+                            }
+                        }
+                        else
+                        {
+                            error.Add(new LogError(Nline, ErrorClass.ERRORincorrectDeclaration));
+                            return;
+                        }
+                    }
+                }
+                if (Code[Nline] != "}")
+                {
+                    error.Add(new LogError(Nline, ErrorClass.ERRORcloseBrace));
+                }
+
+                //Crea una carta
+                if (Type != " " && Name != " " && Faction != " " && Power != " " && Range != " " && error.Count == 0)
+                {
+                    Range = RemoveSpace(Range);
+                    string card = (Name + "|" + Type + "|" + Faction + "|" + Power + "|" + Range + "|" + onActivation);
+                    string d;
+                    string decks = File.ReadAllText(Application.dataPath + "/Resources/Setting/PlayDecks.txt");
+                    if (File.Exists(Application.dataPath + "/Resources/Decks/" + Faction + ".txt"))
+                    {
+                        d = File.ReadAllText(Application.dataPath + "/Resources/Decks/" + Faction + ".txt");
+                        d += "\n" + card;
+                        SaveCard(Faction, d, decks);
+                    }
+                    else
+                    {
+                        SaveCard(Faction, card, decks);
+                    }
+                }
+                else
+                {
+                    error.Add(new LogError(Nline, ErrorClass.ERRORcorrectDeclaration));
+                }
+            }
+            else
+            {
+                error.Add(new LogError(Nline, ErrorClass.ERRORopenBrace));
+            }
+        }
+
+        //Metodo para verificar parametros de carta
+        private string VerificateCard(string Code, int Nline)
+        {
+            string[] sintax;
+            if (EndVerification(Code, ','))
+            {
+                if (Exist(Code, ":"))
+                {
+                    //Verifica si existe una declaracion de array Range
+                    if (Regex.IsMatch(Code, @"^Range|<#definition\s+['{']*;$"))
+                    {
+                        if (Exist(Code, "[") && Exist(Code, "]"))
+                        {
+                            string arrayAttack = "Range";
+                            sintax = Code.Split('[', ']');
+                            if (Exist(sintax[1], ","))
+                            {
+                                sintax = sintax[1].Split(',');
+                                if (sintax.Length > 3 || sintax.Length < 1)
+                                {
+                                    error.Add(new LogError(Nline, ErrorClass.ERRORunspecified));
+                                    return " ";
+                                }
+                                else
+                                {
+                                    foreach (string s in sintax)
+                                    {
+                                         string d;
+                                        if (options.LexicalVerification(s) == VariableClass.Var)
+                                        {
+                                            d = VariableValue(StringValue, s);
+                                        }
+                                        else if (options.LexicalVerification(s) == VariableClass.String)
+                                        {
+                                            d = CreateString(s, Nline);
+                                        }
+                                        else
+                                        {
+                                            error.Add(new LogError(Nline, ErrorClass.ERRORunspecified));
+                                            return " ";
+                                        }
+                                        if (options.CheckAttackClass(d) != AttackClass.None && !Exist(arrayAttack, d) && d != " ")
+                                        {
+
+                                            arrayAttack += "-" + d;
+                                        }
+                                        else
+                                        {
+                                            error.Add(new LogError(Nline, ErrorClass.ERRORincorrectDeclaration));
+                                            return " ";
+                                        }
+                                    }
+                                    return arrayAttack;
+                                }
+                            }
+                            else
+                            {
+                                if (options.LexicalVerification(sintax[1]) == VariableClass.Var)
+                                {
+                                    sintax[1] = VariableValue(StringValue, sintax[1]);
+                                }
+                                else if (options.LexicalVerification(sintax[1]) == VariableClass.String)
+                                {
+                                    sintax[1] = CreateString(sintax[1], Nline);
+                                }
+                                else
+                                {
+                                    error.Add(new LogError(Nline, ErrorClass.ERRORunspecified));
+                                    return " ";
+                                }
+                                if (options.CheckAttackClass(sintax[1]) != AttackClass.None && !Exist(arrayAttack, sintax[1]))
+                                {
+
+                                    arrayAttack += "-" + sintax[1];
+                                }
+                                else
+                                {
+                                    error.Add(new LogError(Nline, ErrorClass.ERRORincorrectDeclaration));
+                                    return " ";
+                                }
+                            }
+                            return arrayAttack;
+                        }
+                    }
+                    //Hace la verificación con variables simples
+                    sintax = Code.Split(':', ',');
+                    sintax[1] = RemoveSpace(sintax[1]);
+
+                    //Verifica la declaración Name
+                    if (Regex.IsMatch(Code, @"^Name|<#definition\s+['{']*;$") || Regex.IsMatch(Code, @"^Faction|<#definition\s+['{']*;$"))
+                    {
+                        if (options.LexicalVerification(sintax[1]) == VariableClass.Var)
+                        {
+                            sintax[1] = VariableValue(StringValue, sintax[1]);
+                        }
+
+                        if (options.LexicalVerification(sintax[1]) == VariableClass.String)
+                        {
+                            sintax[1] = CreateString(sintax[1], Nline);
+                        }
+
+                        if (sintax[1] != " " && Exist(Code, "Name"))
+                        {
+                            return "Name-" + sintax[1];
+                        }
+                        if (sintax[1] != " " && Exist(Code, "Faction"))
+                        {
+                            return "Faction-" + sintax[1];
+                        }
+                        else
+                        {
+                            error.Add(new LogError(Nline, ErrorClass.ERRORunspecified));
+                        }
+                    }
+
+                    //Verificacion declaracion Type
+                    if (Regex.IsMatch(Code, @"^Type|<#definition\s+['{']*;$"))
+                    {
+
+                        if (options.LexicalVerification(sintax[1]) == VariableClass.Var)
+                        {
+                            sintax[1] = VariableValue(StringValue, sintax[1]);
+                        }
+                        if (options.LexicalVerification(sintax[1]) == VariableClass.String)
+                        {
+                            sintax[1] = CreateString(sintax[1], Nline);
+                        }
+                        if (options.CheckCardClass(sintax[1]) != CardClass.None)
+                        {
+                            return "Type-" + sintax[1];
+                        }
+                        else
+                        {
+                            error.Add(new LogError(Nline, ErrorClass.ERRORunspecified));
+                            return " ";
+                        }
+                    }
+
+                    //Verificacion declaracion Power
+                    if (Regex.IsMatch(Code, @"^Power|<#definition\s+['{']*;$"))
+                    {
+                        if (options.LexicalVerification(sintax[1]) == VariableClass.Var)
+                        {
+                            sintax[1] = VariableValue(NumberValue, sintax[1]);
+                        }
+                        if (options.LexicalVerification(sintax[1]) == VariableClass.String)
+                        {
+                            sintax[1] = ArithmeticOperations(sintax[1], Nline);
+                        }
+                        if (Exist(Code, "Power") && sintax[1] != " ")
+                        {
+                            return "Power-" + sintax[1];
+                        }
+                        else
+                        {
+                            error.Add(new LogError(Nline, ErrorClass.ERRORunspecified));
+                            return " ";
+                        }
+                    }
+                }
+            }
+            //Verificacion onActivation
+            else if (EndVerification(Code, '['))
+            {
+                //Verificacion declaracion Power
+                if (Regex.IsMatch(Code, @"^OnActivation|<#definition\s+['{']*;$"))
+                {
+                    if (Exist(Code, ":"))
+                    {
+                        if (Code.Split(':').Length == 2)
+                        {
+                            return "OnActivation";
+                        }
+                        else
+                        {
+                            error.Add(new LogError(Nline, ErrorClass.ERRORunspecified));
+                            return " ";
+                        }
+                    }
+                    else
+                    {
+                        error.Add(new LogError(Nline, ErrorClass.ERRORunspecified));
+                        return " ";
+                    }
+                }
+            }
+            else
+            {
+                error.Add(new LogError(Nline, ErrorClass.ERRORassingDeclaration));
+            }
+            return " ";
+        }
+
+        //Método que verifica OnActivation
+        private string VerificateOnActivation(string[] Code, int Nline)
+        {
+            bool cierre = false;
+            string[] OnActive = new string[3];
+
+            //Nombre del efecto
+            if (Regex.IsMatch(Code[Nline], @"^Effect|<#definition\s+['{']*;$") && Exist(Code[Nline], ":") && EndVerification(Code[Nline], '{'))
+            {
+                while (RemoveSpace(Code[Nline]) != "}" && !Regex.IsMatch(Code[Nline], @"^Selector|<#definition\s+['{']*;$"))
+                {
+                    Nline++;
+                    //Encontrando nombres
+                    if (Regex.IsMatch(Code[Nline], @"^Name|<#definition\s+['{']*;$"))
+                    {
+                        if (Exist(Code[Nline], ":") && EndVerification(Code[Nline], ','))
+                        {
+                            string[] sintax = Code[Nline].Split(':', ',');
+                            sintax[1] = RemoveSpace(sintax[1]);
+                            if (options.LexicalVerification(sintax[1]) == VariableClass.Var)
+                            {
+                                sintax[1] = VariableValue(StringValue, sintax[1]);
+                            }
+
+                            if (options.LexicalVerification(sintax[1]) == VariableClass.String)
+                            {
+                                sintax[1] = CreateString(sintax[1], Nline);
+                            }
+
+                            if (sintax[1] != " ")
+                            {
+                                if (File.Exists(Application.dataPath + "/Resources/Effects/" + sintax[1] + ".txt"))
+                                {
+                                    OnActive[0] = sintax[1];
+
+                                }
+                            }
+                        }
+                    }
+
+                    //Encontrando Parametros
+                    if (Exist(Code[Nline], ":") && Exist(Code[Nline], ",") && !Regex.IsMatch(Code[Nline], @"^Name|<#definition\s+['{']*;$"))
+                    {
+                        string[] param = Code[Nline].Split(':', ',');
+                        param[1] = RemoveSpace(param[1]);
+                        param[0] = RemoveSpace(param[0]);
+                        if (options.LexicalVerification(param[0]) == VariableClass.Var)
+                        {
+                            OnActive[1] += param[0] + ":" + param[1] + ".";
+                        }
+                    }
+                }
+                if (RemoveSpace(Code[Nline]) == "}") cierre = true;
+            }
+            Nline++;
+
+            //Selector
+            if (cierre)
+            {
+                cierre = false;
+                if (Regex.IsMatch(Code[Nline], @"^Selector|<#definition\s+['{']*;$") && Exist(Code[Nline], ":") && EndVerification(Code[Nline], '{'))
+                {
+                    string source = "";
+                    string single = "false";
+                    string predicate = "";
+                    int i = 0;
+                    Nline++;
+                    while (i < 3)
+                    {
+                        if (Regex.IsMatch(Code[Nline], @"^Source|<#definition\s+['{']*;$"))
+                        {
+                            if (Exist(Code[Nline], ":") && EndVerification(Code[Nline], ','))
+                            {
+                                string[] sintax = Code[Nline].Split(':', ',');
+                                sintax[1] = RemoveSpace(sintax[1]);
+                                if (options.LexicalVerification(sintax[1]) == VariableClass.Var)
+                                {
+                                    sintax[1] = VariableValue(StringValue, sintax[1]);
+                                }
+
+                                if (options.LexicalVerification(sintax[1]) == VariableClass.String)
+                                {
+                                    sintax[1] = CreateString(sintax[1], Nline);
+                                }
+
+                                sintax[1] = options.CheckSourceClass(sintax[1]);
+                                if (sintax[1] != " ")
+                                {
+                                    source = sintax[1];
+                                }
+                                else
+                                {
+                                    error.Add(new LogError(Nline, ErrorClass.ERRORincorrectDeclaration));
+                                }
+                            }
+                        }
+                        if (Regex.IsMatch(Code[Nline], @"^Single|<#definition\s+['{']*;$"))
+                        {
+                            if (Exist(Code[Nline], ":") && EndVerification(Code[Nline], ','))
+                            {
+                                string[] sintax = Code[Nline].Split(':', ',');
+                                sintax[1] = RemoveSpace(sintax[1]);
+                                if (options.LexicalVerification(sintax[1]) == VariableClass.Var)
+                                {
+                                    sintax[1] = VariableValue(StringValue, sintax[1]);
+                                }
+                                sintax[1] = RemoveSpace(sintax[1]);
+                                if (sintax[1] == "false" || sintax[1] == "true")
+                                {
+                                    single = sintax[1];
+                                }
+                            }
+                        }
+                        if (Regex.IsMatch(Code[Nline], @"^Predicate|<#definition\s+['{']*;$"))
+                        {
+                            if (Exist(Code[Nline], ":") && EndVerification(Code[Nline], ','))
+                            {
+                                string[] sintax = Code[Nline].Split(':', ',');
+                                sintax[1] = RemoveSpace(sintax[1]);
+                                if (Exist(sintax[1], "(") && Exist(sintax[1], ")"))
+                                {
+                                    string[] unit = sintax[1].Split('(', ')');
+                                    if (RemoveSpace(unit[1]) == "unit" && Exist(sintax[1], "=>") && Exist(sintax[1], "unit."))
+                                    {
+                                        predicate = sintax[1].Split('.')[1];
+                                    }
+                                }
+                            }
+                        }
+
+                        i++;
+                        Nline++;
+                    }
+                    if (source != "" && predicate != "")
+                    {
+                        OnActive[2] = source + "." + single + "." + predicate;
+                    }
+                }
+
+            }
+            else
+            {
+                error.Add(new LogError(Nline, ErrorClass.ERRORcorrectDeclaration));
+            }
+
+            if (RemoveSpace(Code[Nline]) == "}" && RemoveSpace(Code[Nline + 1]) == "}" && RemoveSpace(Code[Nline + 2]) == "]")
+            {
+                //Creando respuesta
+
+                if (OnActive[0] != null && OnActive[2] != null)
+                {
+                    string code = OnActive[0] + "*" + OnActive[1] + "*" + OnActive[2];
+                    return code;
+                }
+
+            }
+            else
+            {
+                error.Add(new LogError(Nline + 1, ErrorClass.ERRORcorrectDeclaration));
+            }
+            return " ";
+        }
+
+        //Método que guarda las carta
+        private void SaveCard(string Faction, string decksito, string decks)
+        {
+            StreamWriter sw = new(Application.dataPath + "/Resources/Decks/" + Faction + ".txt");
+            if (!Exist(decks, Faction))
+            {
+                StreamWriter sw2 = new(Application.dataPath + "/Resources/Setting/PlayDecks.txt");
+                decks += "-" + Faction;
+                sw2.Write(decks);
+                sw2.Close();
+            }
+            sw.Write(decksito);
+            sw.Close();
+        }
+
+        //Método que define los efectos
+        private void EffectCreate(string[] Code, int Nline)
+        {
+            string Name = " ";
+            Dictionary<string, string> Params = new();
+            int Line = Nline - 1;
+
+            while (Line < Code.Length)
+            {
+                if (Regex.IsMatch(Code[Line], @"^Name|<#definition\s+['{']*;$") && Exist(Code[Line], ":") && EndVerification(Code[Line], ','))
+                {
+                    string[] sintax = Code[Line].Split(':', ',');
+                    if (options.LexicalVerification(sintax[1]) == VariableClass.Var) sintax[1] = VariableValue(StringValue, RemoveSpace(sintax[1]));
+
+                    if (options.LexicalVerification(sintax[1]) == VariableClass.String) sintax[1] = CreateString(RemoveSpace(sintax[1]), Nline);
+
+                    if (sintax[1] != " ") Name = sintax[1];
+                }
+
+                if (Regex.IsMatch(Code[Line], @"^Params|<#definition\s+['{']*;$") && Exist(Code[Line], ":") && EndVerification(Code[Line], '{'))
+                {
+                    Line++;
+                    Nline++;
+                    while (!Regex.IsMatch(Code[Line], @"^}|<#End\s+['{']*;$"))
+                    {
+                        string[] sintax = Code[Line].Split(':', ',');
+                        Params[sintax[0]] = RemoveSpace(sintax[1]);
+                        Line++;
+                        Nline++;
+                    }
+                }
+
+                if (Regex.IsMatch(Code[Line], @"^Action|<#definition\s+['{']*;$") && Exist(Code[Line], ":") && EndVerification(Code[Line], '{'))
+                {
+                    if (Exist(Code[Line], "=>"))
+                    {
+                        string[] sintax = Code[Line].Split(':', '=');
+                        sintax = sintax[1].Split('(', ',', ')');
+                        if (RemoveSpace(sintax[1]) == "targets" && RemoveSpace(sintax[2]) == "context")
+                        {
+                            Nline++;
+                            Line++;
+                            if (Name != " ") VerificateEffect(Code, Params, Name, Line);
+                            else error.Add(new LogError(Nline, ErrorClass.ERRORcorrectDeclaration));
+                        }
+                        else error.Add(new LogError(Nline, ErrorClass.ERRORcorrectDeclaration));
+                    }
+                    else error.Add(new LogError(Nline, ErrorClass.ERROReffectAssign));
+                }
+                Line++;
+                Nline++;
+            }
+
+        }
+
+        //Método que verifica los parámetros de los effectos
+        private void VerificateEffect(string[] Code, Dictionary<string, string> Vars, string Name, int Nline)
+        {
+            string[] Action = new string[Code.Length - Nline + 1];
+            Array.Copy(Code, Nline - 1, Action, 0, Code.Length - Nline + 1);
+            string Ordenes = "";
+            List<string> Local_Param_Cards = new();
+            List<string> Local_Param_List = new();
+            List<string> Local_Param_Property = new();
+            bool ActionCierre = false;
+            bool EffectCierre = false;
+            bool ForCierre = true;
+            Local_Param_Cards.Add("");
+
+            //Elimina los espacios en blanco
+            for (int i = 0; i < Action.Length; i++)
+            {
+                Action[i] = RemoveSpace(Action[i]);
+            }
+
+            //Revisión sintáctica en la declaración de efectos
+            foreach (string code in Action)
+            {
+                //Revisa de instrucción for
+                if (Regex.IsMatch(code, @"^for|<#definition\s+['{']*;$"))
+                {
+                    string[] forIs = code.Split(' ');
+                    if (RemoveSpace(forIs[0]) == "for" && RemoveSpace(forIs[1]) == "target" && RemoveSpace(forIs[2]) == "in" && RemoveSpace(forIs[3]) == "targets" && RemoveSpace(forIs[4]) == "{")
+                    {
+                        Ordenes += "for-";
+                        ForCierre = false;
+                    }
+                    else error.Add(new LogError(Nline, ErrorClass.ERRORforUndefined));
+                }
+
+                //Revisa de instrucción while
+                else if (Regex.IsMatch(code, @"^while|<#definition\s+['{']*;$") && Exist(code, "(") && Exist(code, ")"))
+                {
+                    Ordenes += "while-";
+                }
+
+                //Verifica si se utiliza  o asigna una propiedad de target o context
+                else if (Exist(code, "."))
+                {
+                    //Verifica una asignacion
+                    if (Exist(code, "=") && EndVerification(code, ';'))
+                    {
+                        string[] assing = code.Split('=');
+                        string var = RemoveSpace(assing[0]);
+                        if (options.LexicalVerification(var) == VariableClass.Var)
+                        {
+                            assing = assing[1].Split('.', ';');
+
+                            //Asignación Pop
+                            if (assing.Length == 4 && RemoveSpace(assing[0]) == "context")
+                            {
+                                if (RemoveSpace(assing[2]) == "Pop()")
+                                {
+                                    Local_Param_Cards.Add(var);
+                                    Ordenes += "Pop|" + var + "-";
+                                }
+
+                                //Falta definir Find
+                            }
+                            //Asigna de una lista
+                            else if (assing.Length == 3 && VerificateContextList(RemoveSpace(assing[1])) != " ")
+                            {
+                                //Define Assignacion
+                                Local_Param_List.Add(var);
+                                Ordenes += "ListAdd|" + var + "-";
+                            }
+                            //Asigna de alguna propiedad target
+                            else if (assing.Length == 3 && options.CompareTargetProperty(RemoveSpace(assing[1])) != " " && RemoveSpace(assing[0]) == "target" && Ordenes.Contains("for"))
+                            {
+                                //Define Asignacion
+                                Local_Param_Property.Add(var);
+                                Ordenes += "PropAdd|" + var + "-";
+                            }
+                        }
+                    }
+
+                    //Verifica la llamada a una funcion de context
+                    else if ((Exist(code, "(") && Exist(code, ")") || Exist(code, "++") || Exist(code, "--")) && Exist(code, ".") && Exist(code, ";"))
+                    {
+                        string[] assign = code.Split('.', ';');
+                        string function = " ";
+                        string parametro = "";
+                        if (assign[1].Split('(', ')').Length >= 2) parametro = (RemoveSpace(assign[1].Split('(', ')')[1]));
+                        //Funciones directas del context
+                        if (Local_Param_Cards.Contains(parametro) && assign.Length == 4 && RemoveSpace(assign[0]) == "context") function = ContextFunction(assign, parametro);
+                        else if (assign.Length == 4 && RemoveSpace(assign[0]) == "context") function = ContextFunction(assign);
+                        //Funciones de una variable que contienen una lista del context
+                        else if (Local_Param_Cards.Contains(parametro) && assign.Length == 3 && Local_Param_List.Contains(RemoveSpace(assign[0]))) function = ContextFunction(assign, parametro, 1);
+                        else if (assign.Length == 3 && Local_Param_List.Contains(RemoveSpace(assign[0]))) function = ContextFunction(assign, value: 1);
+                        //Funciones de operador doble con un target.Power
+                        if (Ordenes.Contains("for") && assign.Length == 3 && RemoveSpace(assign[0]) == "target" && RemoveSpace(assign[1]) == "Power++") function = "TargetPowerSum";
+                        else if (Ordenes.Contains("for") && assign.Length == 3 && RemoveSpace(assign[0]) == "target" && RemoveSpace(assign[1]) == "Power--") function = "TargetPowerRest";
+                        //Lee instrucciones
+                        if (function != " ") Ordenes += function + "-";
+                        else error.Add(new LogError(Nline, ErrorClass.ERRORcorrectDeclaration));
+                    }
+                }
+                else if (EndVerification(code, '}') && Ordenes.Contains("for") && !ActionCierre && !EffectCierre && !ForCierre)
+                {
+                    ForCierre = true;
+                }
+                else if (EndVerification(code, '}') && !ActionCierre && ForCierre)
+                {
+                    ActionCierre = true;
+                }
+                else if (EndVerification(code, '}') && ActionCierre && ForCierre && !EffectCierre)
+                {
+                    EffectCierre = true;
+                }
+                Nline++;
+            }
+
+            string vars = "";
+            foreach (string s in Vars.Keys)
+            {
+                vars += s + "|" + Vars[s] + "^";
+            }
+            if (Ordenes != " " && ActionCierre && EffectCierre && ForCierre)
+            {
+                string save = CreateString(Name, Nline) + "&" + vars + "&" + Ordenes;
+                StreamWriter sw = new(Application.dataPath + "/Resources/Effects/" + CreateString(Name, Nline) + ".txt");
+                sw.Write(save);
+                sw.Close();
+            }
+            else error.Add(new LogError(Nline, ErrorClass.ERRORcorrectDeclaration));
+        }
+
+        //Método para verificar listar existentes del context en una linea
+        public string VerificateContextList(string Code)
+        {
+            Code = RemoveSpace(Code);
+            if (Code == "TriggerPlayer") return Code;
+            if (Code == "Hand") return Code;
+            if (Code == "Deck") return Code;
+            if (Code == "Graveyard") return Code;
+            if (Code == "Field") return Code;
+            if (Code == "Board") return Code;
+            if (Exist(Code, "(") && Exist(Code, ")"))
+            {
+                string[] ofPlayer = Code.Split('(', ')');
+                if (Exist(RemoveSpace(ofPlayer[0]), "DeckOfPlayer"))
+                {
+                    if (RemoveSpace(ofPlayer[1]) == "context.TriggerPlayer") return "Deck";
+                    else if (options.LexicalVerification(RemoveSpace(ofPlayer[1])) == VariableClass.Var) return ofPlayer[1];
+                }
+                if (Exist(RemoveSpace(ofPlayer[0]), "GraveyardOfPlayer"))
+                {
+                    if (RemoveSpace(ofPlayer[1]) == "context.TriggerPlayer") return "Graveyard";
+                    else if (options.LexicalVerification(RemoveSpace(ofPlayer[1])) == VariableClass.Var) return ofPlayer[1];
+                }
+                if (Exist(RemoveSpace(ofPlayer[0]), "HandOfPlayer"))
+                {
+                    if (RemoveSpace(ofPlayer[1]) == "context.TriggerPlayer") return "Hand";
+                    else if (options.LexicalVerification(RemoveSpace(ofPlayer[1])) == VariableClass.Var) return ofPlayer[1];
+                }
+                if (Exist(RemoveSpace(ofPlayer[0]), "FieldOfPlayer"))
+                {
+                    if (RemoveSpace(ofPlayer[1]) == "context.TriggerPlayer") return "Field";
+                    else if (options.LexicalVerification(RemoveSpace(ofPlayer[1])) == VariableClass.Var) return ofPlayer[1];
+                }
+            }
+            return " ";
+        }
+
+        //Determina la función del context
+        private string ContextFunction(string[] var, string param = " ", int value = 2)
+        {
+            if (RemoveSpace(var[value]) == "Pop()") return "Pop";
+            if (RemoveSpace(var[value]) == "Remove(" + param + ")") return "Remove|" + param;
+            if (RemoveSpace(var[value]) == "Push(" + param + ")") return "Push|" + param; ;
+            if (RemoveSpace(var[value]) == "Add(" + param + ")") return "Add|" + param;
+            if (RemoveSpace(var[value]) == "SendBottom(" + param + ")") return "SendBottom|" + param;
+            if (RemoveSpace(var[value]) == "Shufle()") return "Shuffle";
+
+            return " ";
         }
     }
 }
