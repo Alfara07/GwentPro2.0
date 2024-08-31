@@ -579,7 +579,7 @@ namespace Compiler
         }
 
         //Método que realiza las comparaciones
-        private bool Compare(string Code, int Nline)
+        public bool Compare(string Code, int Nline)
         {
             string[] numbers;
             if (Exist(Code, "<="))

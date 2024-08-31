@@ -258,7 +258,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1bd2836610f5a464aa0674bb0eaf997d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 628844cc797b098458246dd2f8e27b42, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -797,7 +797,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9bf11b2263205eb43ac5521c8597847d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e3c231dc6be126f428a85e2e05cd974b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1164,54 +1164,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 199147437}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95f9ca5e754f998439b09fd9b095c010, type: 3}
+  m_Script: {fileID: 11500000, guid: a99658fa6ce716b4ebd186eb00dee2b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Decks:
-  - {fileID: 6431164290283906761, guid: 2e7f2179bc81a1443ba0c817efc83a39, type: 3}
-  - {fileID: 3615330691448843118, guid: 527d00c3e4c5e8c4aa56dfbe7d0a2c91, type: 3}
-  - {fileID: 3615330691448843118, guid: f38e72a80dd2fad4fb17678781a0a3c3, type: 3}
-  - {fileID: 7930312625647268971, guid: b1c2d72c5a22acb4fb7a5fc57010728b, type: 3}
-  - {fileID: 7930312625647268971, guid: b1c2d72c5a22acb4fb7a5fc57010728b, type: 3}
-  - {fileID: 6560143225611796425, guid: 53daf0d706401214c831750c1cf36351, type: 3}
-  - {fileID: 6560143225611796425, guid: 53daf0d706401214c831750c1cf36351, type: 3}
-  - {fileID: 6560143225611796425, guid: 4af774de4dd55a94b9156c7e15175c5e, type: 3}
-  - {fileID: 6560143225611796425, guid: 4af774de4dd55a94b9156c7e15175c5e, type: 3}
-  - {fileID: 6560143225611796425, guid: d1ec98ac0d61a62499f9f23297627374, type: 3}
-  - {fileID: 6560143225611796425, guid: d1ec98ac0d61a62499f9f23297627374, type: 3}
-  - {fileID: 2710852854349657547, guid: 11c703f1d21617b4aae0e53bd63b0e95, type: 3}
-  - {fileID: 2710852854349657547, guid: 11c703f1d21617b4aae0e53bd63b0e95, type: 3}
-  - {fileID: 5331253494198294644, guid: 1773e0e5b15c63d41acbd101ff142b95, type: 3}
-  - {fileID: 5331253494198294644, guid: 1773e0e5b15c63d41acbd101ff142b95, type: 3}
-  - {fileID: 6560143225611796425, guid: 8d252080c0c4264419f836a3f088f701, type: 3}
-  - {fileID: 6560143225611796425, guid: 8d252080c0c4264419f836a3f088f701, type: 3}
-  - {fileID: 7440886979913178393, guid: ab192bcc95541b74a84b9a4e1d40671b, type: 3}
-  - {fileID: 7440886979913178393, guid: ab192bcc95541b74a84b9a4e1d40671b, type: 3}
-  - {fileID: 6560143225611796425, guid: db16eca27c8ec4c4c96a9f2f1c1a8500, type: 3}
-  - {fileID: 6560143225611796425, guid: db16eca27c8ec4c4c96a9f2f1c1a8500, type: 3}
-  - {fileID: 4576340338725746938, guid: 5384c4c54f90d0e4ca964cca699c22fc, type: 3}
-  - {fileID: 6560143225611796425, guid: c72ea424fb6af6e4eafb12be88192efa, type: 3}
-  - {fileID: 6560143225611796425, guid: 1bffb3e5ed961644cb31c66217fec52b, type: 3}
-  - {fileID: 6560143225611796425, guid: 2bc2bafc389fea14bb257592f8d65863, type: 3}
-  - {fileID: 6560143225611796425, guid: cf406a1ad30d5454db51f3043357c428, type: 3}
-  - {fileID: 6560143225611796425, guid: cf406a1ad30d5454db51f3043357c428, type: 3}
-  - {fileID: 6560143225611796425, guid: cf406a1ad30d5454db51f3043357c428, type: 3}
-  - {fileID: 6560143225611796425, guid: b59f0719448f92c4bb873e42b9f4bcf5, type: 3}
-  - {fileID: 6560143225611796425, guid: f1d4ef2675206ed4c807ddb37710c9e4, type: 3}
-  - {fileID: 6560143225611796425, guid: 68ba577737f793d41bf0cbd6b6c816cf, type: 3}
-  - {fileID: 6560143225611796425, guid: 0861ddc7f805b384f80399f3b470ea06, type: 3}
-  Hands:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  Positions:
+  Player: 1
+  Mazo: []
+  Hand_Pos:
   - {fileID: 994295308}
   - {fileID: 995784980}
   - {fileID: 590848943}
@@ -1222,7 +1180,7 @@ MonoBehaviour:
   - {fileID: 66914309}
   - {fileID: 33106288}
   - {fileID: 1826397168}
-  InvocationPositions:
+  Field_Pos:
   - {fileID: 999294908}
   - {fileID: 1345883928}
   - {fileID: 63781022}
@@ -1235,13 +1193,92 @@ MonoBehaviour:
   - {fileID: 1702697720}
   - {fileID: 1456989516}
   - {fileID: 2079018872}
-  VInvocation: 000000000000000000000000
-  IncreasedPositions:
+  Aum_Pos:
   - {fileID: 1069220705}
   - {fileID: 1544255119}
   - {fileID: 435618182}
-  VIncreased: 000000
-  Manager: {fileID: 1463062299}
+  Aum:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  Hand:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  Field:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  Graveyard:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  Field_leader: {fileID: 0}
+  Card_Invoke: {fileID: 0}
+  Leader: {fileID: 0}
 --- !u!4 &199147439
 Transform:
   m_ObjectHideFlags: 0
@@ -2370,7 +2407,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 4521f1b983ef5b642af24a07802223a1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ec80b78dcaf6a154b8fbfce67312fe6b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2981,7 +3018,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f9d62bffdbc0bbe4bbb4a6b85145c8d7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 586fdfa0d8ade724bb069b1884af4c5a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3367,7 +3404,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: e09a34ed0ed851e41b0dd7ce313bd9e6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 70f950d02c6b0724db9eb6a2ba7a65e6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3909,7 +3946,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 4521f1b983ef5b642af24a07802223a1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ec80b78dcaf6a154b8fbfce67312fe6b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -4040,7 +4077,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -999
-  m_Sprite: {fileID: 21300000, guid: 459009d4fa79fa04c9bde8e7486a149d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ca4f3d4be829e774e867ae5e93f5ad6a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -5062,7 +5099,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fedc7f4d6ab5976418c8ff2ebd5d5126, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3e1a039dd4a7a5943bad282f49a6e7cf, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5106,54 +5143,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1265729679}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95f9ca5e754f998439b09fd9b095c010, type: 3}
+  m_Script: {fileID: 11500000, guid: a99658fa6ce716b4ebd186eb00dee2b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Decks:
-  - {fileID: 3615330691448843118, guid: 26d63937fc65aea448815283615856f3, type: 3}
-  - {fileID: 3615330691448843118, guid: fe074af9998eb054b874bfeaa7039233, type: 3}
-  - {fileID: 3615330691448843118, guid: e6e705e4b68d4d14b96967549e1c0211, type: 3}
-  - {fileID: 6560143225611796425, guid: 4e0fca4ead998cd46904c40d166574de, type: 3}
-  - {fileID: 6560143225611796425, guid: 4e0fca4ead998cd46904c40d166574de, type: 3}
-  - {fileID: 6560143225611796425, guid: b91365991f92c464f8ed2ab17328201a, type: 3}
-  - {fileID: 6560143225611796425, guid: b91365991f92c464f8ed2ab17328201a, type: 3}
-  - {fileID: 6560143225611796425, guid: 7ee9e11ce39b9fe4395db08b02b2b051, type: 3}
-  - {fileID: 6560143225611796425, guid: 7ee9e11ce39b9fe4395db08b02b2b051, type: 3}
-  - {fileID: 6560143225611796425, guid: e76957b48a76f3a469cc7ee1cb812963, type: 3}
-  - {fileID: 6560143225611796425, guid: e76957b48a76f3a469cc7ee1cb812963, type: 3}
-  - {fileID: 6560143225611796425, guid: 793e9068c65f1194abacdc72c10c1175, type: 3}
-  - {fileID: 6560143225611796425, guid: 793e9068c65f1194abacdc72c10c1175, type: 3}
-  - {fileID: 6560143225611796425, guid: e4336fde054a1e745bf7ad3d2565f270, type: 3}
-  - {fileID: 6560143225611796425, guid: e4336fde054a1e745bf7ad3d2565f270, type: 3}
-  - {fileID: 6560143225611796425, guid: 8b9accb00bfb32d40b64ea04f74d6224, type: 3}
-  - {fileID: 6560143225611796425, guid: 8b9accb00bfb32d40b64ea04f74d6224, type: 3}
-  - {fileID: 6560143225611796425, guid: e05989bae8c25f747995ae514784a637, type: 3}
-  - {fileID: 6560143225611796425, guid: e05989bae8c25f747995ae514784a637, type: 3}
-  - {fileID: 6560143225611796425, guid: 8d5a5f2a89eeee5449bc1868993d105e, type: 3}
-  - {fileID: 6560143225611796425, guid: 8d5a5f2a89eeee5449bc1868993d105e, type: 3}
-  - {fileID: 4576340338725746938, guid: 5047bc0fb67cb6341b36d9119f76e723, type: 3}
-  - {fileID: 4576340338725746938, guid: 1a3becd61a2baae45b20c8e627db6bc8, type: 3}
-  - {fileID: 4576340338725746938, guid: f0254c5490675af4cbe1d6de178bc988, type: 3}
-  - {fileID: 4576340338725746938, guid: 05d69bab04f1b264e870897fbbe8a621, type: 3}
-  - {fileID: 6560143225611796425, guid: 8ca2d946fa688b14896dd94d3cec2cf5, type: 3}
-  - {fileID: 6560143225611796425, guid: 8ca2d946fa688b14896dd94d3cec2cf5, type: 3}
-  - {fileID: 6560143225611796425, guid: 935b45efd1e2e5643a4b94c87bb2daa7, type: 3}
-  - {fileID: 6560143225611796425, guid: 504d648ef4689b3468a7d1d9e26ff7e0, type: 3}
-  - {fileID: 6560143225611796425, guid: 504d648ef4689b3468a7d1d9e26ff7e0, type: 3}
-  - {fileID: 6560143225611796425, guid: 504d648ef4689b3468a7d1d9e26ff7e0, type: 3}
-  - {fileID: 6560143225611796425, guid: de22741c9077c14468db7228e2b5a946, type: 3}
-  Hands:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  Positions:
+  Player: 2
+  Mazo: []
+  Hand_Pos:
   - {fileID: 1799593394}
   - {fileID: 902794630}
   - {fileID: 2068058897}
@@ -5164,11 +5159,11 @@ MonoBehaviour:
   - {fileID: 1522910791}
   - {fileID: 2049824059}
   - {fileID: 1307229274}
-  InvocationPositions:
+  Field_Pos:
   - {fileID: 473245883}
   - {fileID: 2103380853}
   - {fileID: 1316821885}
-  - {fileID: 1109629414}
+  - {fileID: 856295686}
   - {fileID: 680747103}
   - {fileID: 1071014023}
   - {fileID: 681891741}
@@ -5177,13 +5172,92 @@ MonoBehaviour:
   - {fileID: 934911006}
   - {fileID: 455213765}
   - {fileID: 1032144387}
-  VInvocation: 000000000000000000000000
-  IncreasedPositions:
+  Aum_Pos:
   - {fileID: 180170194}
   - {fileID: 1909886442}
   - {fileID: 1764652550}
-  VIncreased: 000000
-  Manager: {fileID: 1463062299}
+  Aum:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  Hand:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  Field:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  Graveyard:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  Field_leader: {fileID: 0}
+  Card_Invoke: {fileID: 0}
+  Leader: {fileID: 0}
 --- !u!4 &1265729681
 Transform:
   m_ObjectHideFlags: 0
@@ -6104,7 +6178,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f7220a1d96ae7b24ea5c7e4880507eba, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 902c0553f7ed294459a3295793d76072, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6861,7 +6935,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1bd2836610f5a464aa0674bb0eaf997d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 628844cc797b098458246dd2f8e27b42, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7150,7 +7224,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -9999
-  m_Sprite: {fileID: 21300000, guid: f13677198204df74cb09a2b7f8159ff5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: adb111ae581409248947c8da2c570b10, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -7337,7 +7411,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fedc7f4d6ab5976418c8ff2ebd5d5126, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3e1a039dd4a7a5943bad282f49a6e7cf, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7586,7 +7660,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 094f0986bd8eb84418c8659637a99edc, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 472e7415186b3ad4f82490a2168b823a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7736,7 +7810,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6e4480a8069220741b9b91c59f9a12dd, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d8092e0577a6167468c62d0cf41c278c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
