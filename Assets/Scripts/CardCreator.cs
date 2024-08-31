@@ -43,6 +43,10 @@ namespace Compiler
                 {
                     CardCreate(Lines, NLine);
                 }
+                if (Regex.IsMatch(Line, @"^effect|<#definition\s+['{']*;$"))
+                {
+                    EffectCreate(Lines, NLine);
+                }
                 if (error.Count != 0)
                 {
                     break;
@@ -280,7 +284,7 @@ namespace Compiler
             int b = 0;
             for (int i = Code.Length - 1; i >= 0; i--)
             {
-                if (Code[a] != ' ')
+                if (Code[i] != ' ')
                 {
                     a = i;
                     break;
@@ -836,7 +840,7 @@ namespace Compiler
                     }
                     //Hace la verificación con variables simples
                     sintax = Code.Split(':', ',');
-                    sintax[1] = RemoveSpace(sintax[1]);
+                    sintax[1] = RemoveSpace(sintax[1]);                   
 
                     //Verifica la declaración Name
                     if (Regex.IsMatch(Code, @"^Name|<#definition\s+['{']*;$") || Regex.IsMatch(Code, @"^Faction|<#definition\s+['{']*;$"))
@@ -846,7 +850,7 @@ namespace Compiler
                             sintax[1] = VariableValue(StringValue, sintax[1]);
                         }
 
-                        if (options.LexicalVerification(sintax[1]) == VariableClass.String)
+                        else if (options.LexicalVerification(sintax[1]) == VariableClass.String)
                         {
                             sintax[1] = CreateString(sintax[1], Nline);
                         }
@@ -868,7 +872,6 @@ namespace Compiler
                     //Verificacion declaracion Type
                     if (Regex.IsMatch(Code, @"^Type|<#definition\s+['{']*;$"))
                     {
-
                         if (options.LexicalVerification(sintax[1]) == VariableClass.Var)
                         {
                             sintax[1] = VariableValue(StringValue, sintax[1]);
@@ -1232,13 +1235,17 @@ namespace Compiler
                             //Asignación Pop
                             if (assing.Length == 4 && RemoveSpace(assing[0]) == "context")
                             {
-                                if (RemoveSpace(assing[2]) == "Pop()")
+                                if (RemoveSpace(assing[2]) == "Pop()" && VerificateContextList(assing[1]) != " ")
                                 {
                                     Local_Param_Cards.Add(var);
-                                    Ordenes += "Pop|" + var + "-";
+                                    Ordenes += "Pop|" + assing[1] + "|" + var + "-";
                                 }
-
-                                //Falta definir Find
+                                //Asignacion Find
+                                if (RemoveSpace(assing[2]) == "Find()" && VerificateContextList(assing[1]) != " ")
+                                {
+                                    Local_Param_Cards.Add(var);
+                                    Ordenes += "Find|" + assing[1] + "|" + var + "-";
+                                }
                             }
                             //Asigna de una lista
                             else if (assing.Length == 3 && VerificateContextList(RemoveSpace(assing[1])) != " ")
@@ -1265,15 +1272,15 @@ namespace Compiler
                         string parametro = "";
                         if (assign[1].Split('(', ')').Length >= 2) parametro = (RemoveSpace(assign[1].Split('(', ')')[1]));
                         //Funciones directas del context
-                        if (Local_Param_Cards.Contains(parametro) && assign.Length == 4 && RemoveSpace(assign[0]) == "context") function = ContextFunction(assign, parametro);
+                        if (Local_Param_Cards.Contains(parametro) && assign.Length == 4 && RemoveSpace(assign[0]) == "context" && VerificateContextList(RemoveSpace(assign[1])) != " ") function = ContextFunction(assign, parametro, VerificateContextList(RemoveSpace(assign[1])));
                         else if (assign.Length == 4 && RemoveSpace(assign[0]) == "context") function = ContextFunction(assign);
                         //Funciones de una variable que contienen una lista del context
-                        else if (Local_Param_Cards.Contains(parametro) && assign.Length == 3 && Local_Param_List.Contains(RemoveSpace(assign[0]))) function = ContextFunction(assign, parametro, 1);
+                        else if (Local_Param_Cards.Contains(parametro) && assign.Length == 3 && Local_Param_List.Contains(RemoveSpace(assign[0]))) function = ContextFunction(assign, parametro, assign[0], 1);
                         else if (assign.Length == 3 && Local_Param_List.Contains(RemoveSpace(assign[0]))) function = ContextFunction(assign, value: 1);
                         //Funciones de operador doble con un target.Power
-                        if (Ordenes.Contains("for") && assign.Length == 3 && RemoveSpace(assign[0]) == "target" && RemoveSpace(assign[1]) == "Power++") function = "TargetPowerSum";
-                        else if (Ordenes.Contains("for") && assign.Length == 3 && RemoveSpace(assign[0]) == "target" && RemoveSpace(assign[1]) == "Power--") function = "TargetPowerRest";
-                        //Lee instrucciones
+                        if (Ordenes.Contains("for") && assign.Length == 3 && RemoveSpace(assign[0]) == "target" && RemoveSpace(assign[1]) == "Power++") function = "TargetPowerSum|Source";
+                        else if (Ordenes.Contains("for") && assign.Length == 3 && RemoveSpace(assign[0]) == "target" && RemoveSpace(assign[1]) == "Power--") function = "TargetPowerRest|Source";
+                        //Leer instrucciones
                         if (function != " ") Ordenes += function + "-";
                         else error.Add(new LogError(Nline, ErrorClass.ERRORcorrectDeclaration));
                     }
@@ -1324,36 +1331,36 @@ namespace Compiler
                 if (Exist(RemoveSpace(ofPlayer[0]), "DeckOfPlayer"))
                 {
                     if (RemoveSpace(ofPlayer[1]) == "context.TriggerPlayer") return "Deck";
-                    else if (options.LexicalVerification(RemoveSpace(ofPlayer[1])) == VariableClass.Var) return ofPlayer[1];
+                    else if (options.LexicalVerification(RemoveSpace(ofPlayer[1])) == VariableClass.Var) return "Source";
                 }
                 if (Exist(RemoveSpace(ofPlayer[0]), "GraveyardOfPlayer"))
                 {
                     if (RemoveSpace(ofPlayer[1]) == "context.TriggerPlayer") return "Graveyard";
-                    else if (options.LexicalVerification(RemoveSpace(ofPlayer[1])) == VariableClass.Var) return ofPlayer[1];
+                    else if (options.LexicalVerification(RemoveSpace(ofPlayer[1])) == VariableClass.Var) return "Source";
                 }
                 if (Exist(RemoveSpace(ofPlayer[0]), "HandOfPlayer"))
                 {
                     if (RemoveSpace(ofPlayer[1]) == "context.TriggerPlayer") return "Hand";
-                    else if (options.LexicalVerification(RemoveSpace(ofPlayer[1])) == VariableClass.Var) return ofPlayer[1];
+                    else if (options.LexicalVerification(RemoveSpace(ofPlayer[1])) == VariableClass.Var) return "Source";
                 }
                 if (Exist(RemoveSpace(ofPlayer[0]), "FieldOfPlayer"))
                 {
                     if (RemoveSpace(ofPlayer[1]) == "context.TriggerPlayer") return "Field";
-                    else if (options.LexicalVerification(RemoveSpace(ofPlayer[1])) == VariableClass.Var) return ofPlayer[1];
+                    else if (options.LexicalVerification(RemoveSpace(ofPlayer[1])) == VariableClass.Var) return "Source";
                 }
             }
             return " ";
         }
 
         //Determina la función del context
-        private string ContextFunction(string[] var, string param = " ", int value = 2)
+        private string ContextFunction(string[] var, string param = " ", string list = "", int value = 2)
         {
-            if (RemoveSpace(var[value]) == "Pop()") return "Pop";
-            if (RemoveSpace(var[value]) == "Remove(" + param + ")") return "Remove|" + param;
-            if (RemoveSpace(var[value]) == "Push(" + param + ")") return "Push|" + param; ;
-            if (RemoveSpace(var[value]) == "Add(" + param + ")") return "Add|" + param;
-            if (RemoveSpace(var[value]) == "SendBottom(" + param + ")") return "SendBottom|" + param;
-            if (RemoveSpace(var[value]) == "Shufle()") return "Shuffle";
+            if (RemoveSpace(var[value]) == "Pop()") return "Pop|" + list;
+            if (RemoveSpace(var[value]) == "Remove(" + param + ")") return "Remove|" + list + "|" + param;
+            if (RemoveSpace(var[value]) == "Push(" + param + ")") return "Push|" + list + "|" + param + "|"; ;
+            if (RemoveSpace(var[value]) == "Add(" + param + ")") return "Add|" + list + "|" + param + "|";
+            if (RemoveSpace(var[value]) == "SendBottom(" + param + ")") return "SendBottom|" + list + "|" + param + "|";
+            if (RemoveSpace(var[value]) == "Shufle()") return "Shuffle|" + list;
 
             return " ";
         }
