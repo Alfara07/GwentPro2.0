@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     string datos;
     public List<GameObject> Cards = new();
     public GameObject LeaderSelect;
-    public GameObject Deck1, Deck2;
+    public GameObject Deck1, Deck2,A,B,C,D;
     public Transform Pos1, Pos2;
     public Deck deck1, deck2;
     public Camera P1, P2;
@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI P1Round, P2Round, P1Power, P2Power;
     public float Round1, Round2, RoundPower1, RoundPower2;
     public GameObject[] Climas, Climas_Pos = new GameObject[3];
-    public bool Jug1_End, Jug2_End = false;
+    public bool Jug1_End, Jug2_End,EndGam = false;
     public Context context;
     public GameObject[] Board = new GameObject[24];
     // Start is called before the first frame update
@@ -50,6 +50,7 @@ public class GameManager : MonoBehaviour
         deck1.Robar(10);
         deck1.Leader = LeaderSelect;
         deck1.Leader.transform.position = deck1.Field_leader.transform.position;
+        deck1.Leader.transform.localScale = new Vector2(0.37f, 0.33f);
         LeaderSelect = null;
         Cards.Clear();
 
@@ -61,8 +62,8 @@ public class GameManager : MonoBehaviour
         deck2.Robar(10);
         deck2.Leader = LeaderSelect;
         deck2.Leader = LeaderSelect;
-        deck2.Leader.transform.position = deck2.Field_leader.transform.position;
-        deck2.Leader.transform.rotation = deck2.Field_leader.transform.rotation;
+        deck2.Leader.transform.SetPositionAndRotation(deck2.Field_leader.transform.position, deck2.Field_leader.transform.rotation);
+        deck2.Leader.transform.localScale = new Vector2(0.37f, 0.33f);
         LeaderSelect = null;
     }
 
@@ -113,54 +114,56 @@ public class GameManager : MonoBehaviour
     //Funcion para cambiar turno
     public void ChangeTurn()
     {
-        bool cam_Change = false;
-        if (!invoke && Turn == 1)
+        if(!EndGam)
         {
-            Jug1_End = true;
-        }
-        if (!invoke && Turn == 2)
-        {
-            Jug2_End = true;
-        }
-        TextMeshProUGUI text;
-        if (P1.isActiveAndEnabled && !Jug2_End)
-        {
-            P1.gameObject.SetActive(false);
-            P2.gameObject.SetActive(true);
-            cam_Change = true;
-            Turn = 2;
-            for (int i = 0; i < Climas_Pos.Length; i++)
+            bool cam_Change = false;
+            if (!invoke && Turn == 1)
             {
-                Climas_Pos[i].GetComponent<Casilla_Invocacion>().player = 2;
-                Climas_Pos[i].GetComponent<Casilla_Invocacion>().Deck = deck2;
+                Jug1_End = true;
+            }
+            if (!invoke && Turn == 2)
+            {
+                Jug2_End = true;
+            }
+            TextMeshProUGUI text;
+            if (P1.isActiveAndEnabled && !Jug2_End)
+            {
+                P1.gameObject.SetActive(false);
+                P2.gameObject.SetActive(true);
+                cam_Change = true;
+                Turn = 2;
+                for (int i = 0; i < Climas_Pos.Length; i++)
+                {
+                    Climas_Pos[i].GetComponent<Casilla_Invocacion>().player = 2;
+                    Climas_Pos[i].GetComponent<Casilla_Invocacion>().Deck = deck2;
+                }
+            }
+            else if (P2.isActiveAndEnabled && !Jug1_End)
+            {
+
+                P2.gameObject.SetActive(false);
+                P1.gameObject.SetActive(true);
+                cam_Change = true;
+                Turn = 1;
+                for (int i = 0; i < Climas_Pos.Length; i++)
+                {
+                    Climas_Pos[i].GetComponent<Casilla_Invocacion>().player = 1;
+                    Climas_Pos[i].GetComponent<Casilla_Invocacion>().Deck = deck1;
+                }
+            }
+
+            if (cam_Change)
+            {
+                text = P1Power;
+                P1Power = P2Power;
+                P2Power = text;
+
+            }
+            if (!Jug1_End || !Jug2_End)
+            {
+                invoke = false;
             }
         }
-        else if (P2.isActiveAndEnabled && !Jug1_End)
-        {
-
-            P2.gameObject.SetActive(false);
-            P1.gameObject.SetActive(true);
-            cam_Change = true;
-            Turn = 1;
-            for (int i = 0; i < Climas_Pos.Length; i++)
-            {
-                Climas_Pos[i].GetComponent<Casilla_Invocacion>().player = 1;
-                Climas_Pos[i].GetComponent<Casilla_Invocacion>().Deck = deck1;
-            }
-        }
-
-        if (cam_Change)
-        {
-            text = P1Power;
-            P1Power = P2Power;
-            P2Power = text;
-
-        }
-        if (!Jug1_End || !Jug2_End)
-        {
-            invoke = false;
-        }
-
     }
 
     //Funcion para verificar fin de rondas
@@ -181,8 +184,8 @@ public class GameManager : MonoBehaviour
                 Round2++;
                 Round1++;
             }
-            P1Round.text = "P1: " + Round1;
-            P2Round.text = "P2: " + Round2;
+            P1Round.text = Round1.ToString();
+            P2Round.text = Round2.ToString();
             Jug1_End = false;
             Jug2_End = false;
             for (int i = 0; i < Climas_Pos.Length; i++)
@@ -238,16 +241,28 @@ public class GameManager : MonoBehaviour
         if (Round1 == 2 && Round2 < 2)
         {
             //Gana jugador 1
+            A.SetActive(true);
+            B.SetActive(true);
+            invoke = true;
+            EndGam = true;
         }
 
         if (Round1 < 2 && Round2 == 2)
         {
             //Gana jugador 2
+            A.SetActive(true);
+            C.SetActive(true);
+            invoke = true;
+            EndGam = true;
         }
 
         if (Round1 == 2 && Round2 == 2)
         {
             //Empate
+            A.SetActive(true);
+            D.SetActive(true);
+            invoke = true;
+            EndGam = true;
         }
     }
 
