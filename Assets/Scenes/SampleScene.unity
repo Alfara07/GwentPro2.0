@@ -454,6 +454,7 @@ GameObject:
   - component: {fileID: 57750663}
   - component: {fileID: 57750662}
   - component: {fileID: 57750661}
+  - component: {fileID: 57750664}
   m_Layer: 5
   m_Name: Image (3)
   m_TagString: Untagged
@@ -525,7 +526,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 57750664}
         m_TargetAssemblyTypeName: Soltar_Carta, Assembly-CSharp
         m_MethodName: Activar
         m_Mode: 1
@@ -572,6 +573,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 57750659}
   m_CullTransparentMesh: 1
+--- !u!114 &57750664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 57750659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d09287860860145a51564c1bee170d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  game: {fileID: 601365984}
+  num: 3
+  manager: {fileID: 1463062299}
 --- !u!1 &63781022
 GameObject:
   m_ObjectHideFlags: 0
@@ -793,7 +809,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 601365984}
         m_TargetAssemblyTypeName: DrawCard, Assembly-CSharp
         m_MethodName: Se_Acabo
         m_Mode: 1
@@ -855,6 +871,7 @@ GameObject:
   - component: {fileID: 138204507}
   - component: {fileID: 138204506}
   - component: {fileID: 138204505}
+  - component: {fileID: 138204508}
   m_Layer: 5
   m_Name: Image (2)
   m_TagString: Untagged
@@ -926,7 +943,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 138204508}
         m_TargetAssemblyTypeName: Soltar_Carta, Assembly-CSharp
         m_MethodName: Activar
         m_Mode: 1
@@ -973,6 +990,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 138204503}
   m_CullTransparentMesh: 1
+--- !u!114 &138204508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138204503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d09287860860145a51564c1bee170d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  game: {fileID: 601365984}
+  num: 2
+  manager: {fileID: 1463062299}
 --- !u!1 &180170194
 GameObject:
   m_ObjectHideFlags: 0
@@ -1060,6 +1092,7 @@ GameObject:
   - component: {fileID: 187189736}
   - component: {fileID: 187189735}
   - component: {fileID: 187189734}
+  - component: {fileID: 187189737}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -1131,7 +1164,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 187189737}
         m_TargetAssemblyTypeName: Soltar_Carta, Assembly-CSharp
         m_MethodName: Activar
         m_Mode: 1
@@ -1178,6 +1211,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 187189732}
   m_CullTransparentMesh: 1
+--- !u!114 &187189737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 187189732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d09287860860145a51564c1bee170d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  game: {fileID: 601365984}
+  num: 0
+  manager: {fileID: 1463062299}
 --- !u!1 &199147437
 GameObject:
   m_ObjectHideFlags: 0
@@ -1237,6 +1285,7 @@ MonoBehaviour:
   - {fileID: 1069220705}
   - {fileID: 1544255119}
   - {fileID: 435618182}
+  Graveyard_Pos: {fileID: 552335651}
   Aum:
   - {fileID: 0}
   - {fileID: 0}
@@ -1265,57 +1314,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  Graveyard:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  Graveyard: []
   Field_leader: {fileID: 9002367872648369338}
   Card_Invoke: {fileID: 0}
   Leader: {fileID: 0}
@@ -1381,6 +1380,7 @@ GameObject:
   - component: {fileID: 242919318}
   - component: {fileID: 242919317}
   - component: {fileID: 242919316}
+  - component: {fileID: 242919319}
   m_Layer: 5
   m_Name: Image (7)
   m_TagString: Untagged
@@ -1452,7 +1452,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 242919319}
         m_TargetAssemblyTypeName: Soltar_Carta, Assembly-CSharp
         m_MethodName: Activar
         m_Mode: 1
@@ -1499,6 +1499,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 242919314}
   m_CullTransparentMesh: 1
+--- !u!114 &242919319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 242919314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d09287860860145a51564c1bee170d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  game: {fileID: 601365984}
+  num: 7
+  manager: {fileID: 1463062299}
 --- !u!1 &299152886
 GameObject:
   m_ObjectHideFlags: 0
@@ -2543,6 +2558,7 @@ GameObject:
   - component: {fileID: 601365980}
   - component: {fileID: 601365981}
   - component: {fileID: 601365983}
+  - component: {fileID: 601365984}
   m_Layer: 0
   m_Name: ImageDeck 1
   m_TagString: Untagged
@@ -2643,6 +2659,31 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 3.93, y: 6.66}
   m_EdgeRadius: 0
+--- !u!114 &601365984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 601365979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc3efa64d514cea418c99ccbbe40b203, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Image:
+  - {fileID: 187189735}
+  - {fileID: 823084283}
+  - {fileID: 138204506}
+  - {fileID: 57750662}
+  - {fileID: 1483492910}
+  - {fileID: 1633356341}
+  - {fileID: 2034126624}
+  - {fileID: 242919317}
+  - {fileID: 1983510247}
+  - {fileID: 981753650}
+  GameManager: {fileID: 1463062299}
+  button: {fileID: 73835674}
 --- !u!1 &632297542
 GameObject:
   m_ObjectHideFlags: 0
@@ -3765,6 +3806,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 601365984}
+        m_TargetAssemblyTypeName: DrawCard, Assembly-CSharp
+        m_MethodName: Cambio
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &793023654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3950,6 +4003,7 @@ GameObject:
   - component: {fileID: 823084284}
   - component: {fileID: 823084283}
   - component: {fileID: 823084282}
+  - component: {fileID: 823084285}
   m_Layer: 5
   m_Name: Image (1)
   m_TagString: Untagged
@@ -4021,7 +4075,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 823084285}
         m_TargetAssemblyTypeName: Soltar_Carta, Assembly-CSharp
         m_MethodName: Activar
         m_Mode: 1
@@ -4068,6 +4122,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 823084280}
   m_CullTransparentMesh: 1
+--- !u!114 &823084285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 823084280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d09287860860145a51564c1bee170d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  game: {fileID: 601365984}
+  num: 1
+  manager: {fileID: 1463062299}
 --- !u!1 &856295686
 GameObject:
   m_ObjectHideFlags: 0
@@ -4672,6 +4741,7 @@ GameObject:
   - component: {fileID: 981753651}
   - component: {fileID: 981753650}
   - component: {fileID: 981753649}
+  - component: {fileID: 981753652}
   m_Layer: 5
   m_Name: Image (9)
   m_TagString: Untagged
@@ -4743,7 +4813,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 981753652}
         m_TargetAssemblyTypeName: Soltar_Carta, Assembly-CSharp
         m_MethodName: Activar
         m_Mode: 1
@@ -4790,6 +4860,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 981753647}
   m_CullTransparentMesh: 1
+--- !u!114 &981753652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 981753647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d09287860860145a51564c1bee170d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  game: {fileID: 601365984}
+  num: 9
+  manager: {fileID: 1463062299}
 --- !u!1 &994295308
 GameObject:
   m_ObjectHideFlags: 0
@@ -5857,6 +5942,7 @@ MonoBehaviour:
   - {fileID: 180170194}
   - {fileID: 1909886442}
   - {fileID: 1764652550}
+  Graveyard_Pos: {fileID: 1457929565}
   Aum:
   - {fileID: 0}
   - {fileID: 0}
@@ -5885,57 +5971,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  Graveyard:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  Graveyard: []
   Field_leader: {fileID: 9002367872884855503}
   Card_Invoke: {fileID: 0}
   Leader: {fileID: 0}
@@ -7036,6 +7072,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  jug1: 1
+  jug2: 1
 --- !u!4 &1463062300
 Transform:
   m_ObjectHideFlags: 0
@@ -7196,6 +7234,7 @@ GameObject:
   - component: {fileID: 1483492911}
   - component: {fileID: 1483492910}
   - component: {fileID: 1483492909}
+  - component: {fileID: 1483492912}
   m_Layer: 5
   m_Name: Image (4)
   m_TagString: Untagged
@@ -7267,7 +7306,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1483492912}
         m_TargetAssemblyTypeName: Soltar_Carta, Assembly-CSharp
         m_MethodName: Activar
         m_Mode: 1
@@ -7314,6 +7353,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1483492907}
   m_CullTransparentMesh: 1
+--- !u!114 &1483492912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483492907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d09287860860145a51564c1bee170d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  game: {fileID: 601365984}
+  num: 4
+  manager: {fileID: 1463062299}
 --- !u!1 &1518687179
 GameObject:
   m_ObjectHideFlags: 0
@@ -8013,6 +8067,7 @@ GameObject:
   - component: {fileID: 1633356342}
   - component: {fileID: 1633356341}
   - component: {fileID: 1633356340}
+  - component: {fileID: 1633356343}
   m_Layer: 5
   m_Name: Image (5)
   m_TagString: Untagged
@@ -8084,7 +8139,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1633356343}
         m_TargetAssemblyTypeName: Soltar_Carta, Assembly-CSharp
         m_MethodName: Activar
         m_Mode: 1
@@ -8131,6 +8186,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1633356338}
   m_CullTransparentMesh: 1
+--- !u!114 &1633356343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1633356338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d09287860860145a51564c1bee170d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  game: {fileID: 601365984}
+  num: 5
+  manager: {fileID: 1463062299}
 --- !u!1 &1649264258
 GameObject:
   m_ObjectHideFlags: 0
@@ -8937,6 +9007,7 @@ GameObject:
   - component: {fileID: 1983510248}
   - component: {fileID: 1983510247}
   - component: {fileID: 1983510246}
+  - component: {fileID: 1983510249}
   m_Layer: 5
   m_Name: Image (8)
   m_TagString: Untagged
@@ -9008,7 +9079,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1983510249}
         m_TargetAssemblyTypeName: Soltar_Carta, Assembly-CSharp
         m_MethodName: Activar
         m_Mode: 1
@@ -9055,6 +9126,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1983510244}
   m_CullTransparentMesh: 1
+--- !u!114 &1983510249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1983510244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d09287860860145a51564c1bee170d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  game: {fileID: 601365984}
+  num: 8
+  manager: {fileID: 1463062299}
 --- !u!1 &1984489582
 GameObject:
   m_ObjectHideFlags: 0
@@ -9182,6 +9268,7 @@ GameObject:
   - component: {fileID: 2034126625}
   - component: {fileID: 2034126624}
   - component: {fileID: 2034126623}
+  - component: {fileID: 2034126626}
   m_Layer: 5
   m_Name: Image (6)
   m_TagString: Untagged
@@ -9253,7 +9340,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2034126626}
         m_TargetAssemblyTypeName: Soltar_Carta, Assembly-CSharp
         m_MethodName: Activar
         m_Mode: 1
@@ -9300,6 +9387,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2034126621}
   m_CullTransparentMesh: 1
+--- !u!114 &2034126626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2034126621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d09287860860145a51564c1bee170d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  game: {fileID: 601365984}
+  num: 6
+  manager: {fileID: 1463062299}
 --- !u!1 &2045891728
 GameObject:
   m_ObjectHideFlags: 0

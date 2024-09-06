@@ -31,4 +31,4 @@ Diego|Oro|matcom|10|Ranged-|*
 Diego|Oro|matcom|10|Ranged-|*
 Diego|Oro|matcom|10|Ranged-|*
 Diego|Oro|matcom|10|Ranged-|*
-diego|Oro|matcom|10|Ranged-|Barajear*Amount:5.*deck.false.Power == 5
+diego|Oro|matcom|10|Ranged-|*

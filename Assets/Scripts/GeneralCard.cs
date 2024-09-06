@@ -21,6 +21,8 @@ public class GeneralCard : MonoBehaviour
     public int players;
     public CardAdministrator Card;
     public bool InEscena = true;
+    public Sprite sprite;
+
     private void Start()
     {
         Imag_Des = GameObject.FindGameObjectWithTag("BigCard").GetComponent<RawImage>();
@@ -30,14 +32,11 @@ public class GeneralCard : MonoBehaviour
 
     private void Update()
     {
-        if(!InEscena)
+        if (players == GameObject.FindGameObjectWithTag("Admin").GetComponent<GameManager>().Turn || invoke || CardClass.Lider == Type) gameObject.GetComponent<SpriteRenderer>().sprite = sprite;
+        else gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Images/Random");
+        if (invoke && !effects && effect != null)
         {
-            Destroy(gameObject);
-        }
-        if(invoke && !effects && effect != null)
-        {
-            GameObject.FindGameObjectWithTag("Admin").GetComponent<GameManager>().DeterminateContext();
-            effect.Action(GameObject.FindGameObjectWithTag("Admin").GetComponent<GameManager>().context);
+            effect.EjecutarEfecto();
             effects = true;
         }
     }
@@ -61,11 +60,11 @@ public class GeneralCard : MonoBehaviour
 
         if(File.Exists(Application.dataPath + "/Resources/Images/" + Name + ".jpg"))
         {
-            gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Images/" + Name);
+            sprite = Resources.Load<Sprite>("Images/" + Name);
         }
         else
         {
-            gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Images/Random");
+            sprite = Resources.Load<Sprite>("Images/Random");
         }
         gameObject.GetComponent<BoxCollider2D>().isTrigger = true;
         gameObject.GetComponent<BoxCollider2D>().size = new Vector2(4f, 7f);
@@ -92,6 +91,7 @@ public class GeneralCard : MonoBehaviour
 
     private void OnMouseDown()
     {
-        Deck.Select_Invoke(gameObject);
+        if(players==1 && !GameObject.FindGameObjectWithTag("Admin").GetComponent<GameManager>().jug1) Deck.Select_Invoke(gameObject);
+        if(players==2 && !GameObject.FindGameObjectWithTag("Admin").GetComponent<GameManager>().jug2) Deck.Select_Invoke(gameObject);
     }
 }

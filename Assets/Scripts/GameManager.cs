@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     public bool Jug1_End, Jug2_End,EndGam = false;
     public Context context;
     public GameObject[] Board = new GameObject[24];
+    public bool jug1, jug2 = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -47,7 +48,6 @@ public class GameManager : MonoBehaviour
         deck1.Mazo = new GameObject[Cards.Count];
         deck1.Mazo = Cards.ToArray();
         deck1.Mazo = deck1.Barajear(deck1.Mazo);
-        deck1.Robar(10);
         deck1.Leader = LeaderSelect;
         deck1.Leader.transform.position = deck1.Field_leader.transform.position;
         deck1.Leader.transform.localScale = new Vector2(0.37f, 0.33f);
@@ -59,7 +59,6 @@ public class GameManager : MonoBehaviour
         deck2.Mazo = Cards.ToArray();
         Cards.Clear();
         deck2.Mazo = deck2.Barajear(deck2.Mazo);
-        deck2.Robar(10);
         deck2.Leader = LeaderSelect;
         deck2.Leader = LeaderSelect;
         deck2.Leader.transform.SetPositionAndRotation(deck2.Field_leader.transform.position, deck2.Field_leader.transform.rotation);
@@ -94,7 +93,7 @@ public class GameManager : MonoBehaviour
             if (deck.Length == 6 && File.Exists(Application.dataPath + "/Resources/Effects/" + deck[5].Split('*')[0] + ".txt"))
             {
                 string effec = File.ReadAllText(Application.dataPath + "/Resources/Effects/" + deck[5].Split('*')[0] + ".txt");
-                card.effect = new effect(effec, deck[5].Split('*')[2], card);
+                card.effect = new effect(effec, deck[5].Split('*')[2], card, deck[5].Split('*')[1]);
             }
             gameObject.AddComponent<GeneralCard>();
             gameObject.GetComponent<GeneralCard>().Create(card, player, TriggerPlayer);
@@ -117,16 +116,16 @@ public class GameManager : MonoBehaviour
         if(!EndGam)
         {
             bool cam_Change = false;
-            if (!invoke && Turn == 1)
+            if (!invoke && Turn == 1 && !jug1)
             {
                 Jug1_End = true;
             }
-            if (!invoke && Turn == 2)
+            if (!invoke && Turn == 2 && !jug2)
             {
                 Jug2_End = true;
             }
             TextMeshProUGUI text;
-            if (P1.isActiveAndEnabled && !Jug2_End)
+            if (P1.isActiveAndEnabled && !Jug2_End &&!jug1)
             {
                 P1.gameObject.SetActive(false);
                 P2.gameObject.SetActive(true);
@@ -138,7 +137,7 @@ public class GameManager : MonoBehaviour
                     Climas_Pos[i].GetComponent<Casilla_Invocacion>().Deck = deck2;
                 }
             }
-            else if (P2.isActiveAndEnabled && !Jug1_End)
+            else if (P2.isActiveAndEnabled && !Jug1_End && !jug2)
             {
 
                 P2.gameObject.SetActive(false);
@@ -157,9 +156,11 @@ public class GameManager : MonoBehaviour
                 text = P1Power;
                 P1Power = P2Power;
                 P2Power = text;
-
+                text = P1Round;
+                P1Round = P2Round;
+                P2Round = text;
             }
-            if (!Jug1_End || !Jug2_End)
+            if ((!Jug1_End && !jug1) || (!Jug2_End && !jug2))
             {
                 invoke = false;
             }
@@ -183,32 +184,38 @@ public class GameManager : MonoBehaviour
             {
                 Round2++;
                 Round1++;
-            }
-            P1Round.text = Round1.ToString();
-            P2Round.text = Round2.ToString();
+            }           
             Jug1_End = false;
             Jug2_End = false;
-            for (int i = 0; i < Climas_Pos.Length; i++)
+
+            for (int i = 0; i < Climas_Pos.Length; i ++)
             {
-                Destroy(Climas[i]);
+                if (Climas[i] != null)
+                {
+                    if (Climas[i].GetComponent<GeneralCard>().players == 1) deck1.Graveyard.Add(Climas[i]);
+                    if (Climas[i].GetComponent<GeneralCard>().players == 2) deck2.Graveyard.Add(Climas[i]);
+                }
                 Climas[i] = null;
             }
 
             for (int i = 0; i < deck1.Field.Length; i++)
             {
-                Destroy(deck1.Field[i]);
+                if (deck1.Field[i] != null) deck1.Graveyard.Add(deck1.Field[i]);
                 deck1.Field[i] = null;
-                Destroy(deck2.Field[i]);
+                if (deck2.Field[i] != null) deck2.Graveyard.Add(deck2.Field[i]);
                 deck2.Field[i] = null;
             }
 
             for (int i = 0; i < deck1.Aum.Length; i++)
             {
-                Destroy(deck1.Aum[i]);
+                if (deck1.Aum[1] != null) deck1.Graveyard.Add(deck1.Aum[i]);
                 deck1.Aum[i] = null;
-                Destroy(deck2.Aum[i]);
+                if (deck2.Aum[i] != null) deck2.Graveyard.Add(deck2.Aum[1]);
                 deck2.Aum[i] = null;
             }
+            deck1.Robar(2);
+            deck2.Robar(2);
+
         }
     }
 
@@ -337,6 +344,24 @@ public class GameManager : MonoBehaviour
             if (deck2.Field[i] != null)
             {
                 context.FieldOfPlayer_2.Add(deck2.Field[i].GetComponent<GeneralCard>());
+            }
+        }
+
+
+        //Cartas del Graveyard1
+        for (int i = 0; i < deck1.Graveyard.Count; i++)
+        {
+            if (deck1.Graveyard[i] != null)
+            {
+                context.GraveyardOfPlayer_1.Add(deck1.Graveyard[i].GetComponent<GeneralCard>());
+            }
+        }
+        //Cartas del Graveyard2
+        for (int i = 0; i < deck2.Graveyard.Count; i++)
+        {
+            if (deck2.Graveyard[i] != null)
+            {
+                context.GraveyardOfPlayer_2.Add(deck2.Graveyard[i].GetComponent<GeneralCard>());
             }
         }
     }

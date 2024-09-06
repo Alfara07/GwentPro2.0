@@ -19,37 +19,77 @@ namespace Compiler
         public List<string> Local_param;
         public List<string> Targets;
         public Dictionary<string, string> Params;
-        readonly CardCreator process = new();
-        int InstructionActual = 0;
-        //Parametros locales
-        Dictionary<string, GeneralCard> Local_Param_List = new();
-        Dictionary<string, GeneralCard> Local_Param_Cards = new();
-        Dictionary<string, GeneralCard> Local_Param_Property = new();
+        readonly CardCreator cardCreator = new();
+        readonly Options options = new();
+        int instruccion = 0;
 
-        public effect(string Definicion, string source,CardAdministrator card)
+        //Parametros locales
+        Dictionary<string, GeneralCard> Local_Param_Cards = new();
+
+        public effect(string Definicion, string source, CardAdministrator card, string Param)
         {
             string[] parts = Definicion.Split('&');
-            Name = process.RemoveSpace(parts[0]);
+            Name = cardCreator.RemoveSpace(parts[0]);
             Local_param = parts[1].Split('^').ToList();
             Instruntions = parts[2].Split('-').ToList();
             Source = source.Split('.');
+            if (Param != "")
+            {
+                string[] parametros = Param.Split('.');
+                foreach (string s in parametros)
+                {
+                    if (s.Contains(":"))
+                    {
+                        Params[s.Split(':')[0]] = s.Split(':')[1];
+                        if (options.LexicalVerification(cardCreator.RemoveSpace(s.Split(':')[1])) == VariableClass.Number)
+                        {
+                            string value = "number " + cardCreator.RemoveSpace(s.Split(':')[0] + " = " + cardCreator.RemoveSpace(s.Split(':')[1]) + ";");
+                            cardCreator.NumberMaker(value, 0);
+                        }
+                        if (options.LexicalVerification("'" + cardCreator.RemoveSpace(s.Split(':')[1]) + "'") == VariableClass.String)
+                        {
+                            string value = "string " + cardCreator.RemoveSpace(s.Split(':')[0] + " = " + cardCreator.RemoveSpace(s.Split(':')[1]) + ";");
+                            cardCreator.NumberMaker(value, 0);
+                        }
+                    }
+                }
+            }
             this.card = card;
         }
 
-        public void Action(Context context)
+        public void EjecutarEfecto()
         {
-            foreach (string instrucion in Instruntions)
+            bool repetir = true;
+            string whi = "";
+            int whileintru = 0;
+            while (repetir)
             {
-                if(instrucion != "")
+                for (int i = instruccion; i < Instruntions.Count; i++)
                 {
-                    string[] parts = instrucion.Split('|');
-                    if(parts.Length == 3) DeterminateList(parts[1], context, parts[0], parts[2]);
-                    else DeterminateList(parts[1], context, parts[0]);
-                    InstructionActual++;
+                    string instrucion = Instruntions[i];
+                    if (instrucion != "")
+                    {
+                        string[] parts = instrucion.Split('|');
+                        if (parts[0] == "while")
+                        {
+                            whi = parts[1];
+                            whileintru = i + 1;
+                        }
+                        if (parts.Length >= 3) DeterminateList(parts[1], GameObject.FindGameObjectWithTag("Admin").GetComponent<GameManager>().context, parts[0], parts[2]);
+                        else DeterminateList(parts[1], GameObject.FindGameObjectWithTag("Admin").GetComponent<GameManager>().context, parts[0]);
+                        i = instruccion;
+                        instruccion++;
+                    }
                 }
+                if (cardCreator.Compare(whi, 0))
+                {
+                    repetir = true;
+                    instruccion = whileintru;
+                }
+                else repetir = false;
             }
         }
-        public List<GeneralCard> EjecutarEfecto(List<GeneralCard> list,string instruction, string var = " ")
+        public List<GeneralCard> EjecutarEfecto(List<GeneralCard> list, string instruction, string var = " ")
         {
             GeneralCard card;
             switch (instruction)
@@ -59,13 +99,15 @@ namespace Compiler
                     Local_Param_Cards[var] = card;
                     list.RemoveAt(0);
                     return list;
+
                 case "Add":
-                    if(Local_Param_Cards.ContainsKey(var))
+                    if (Local_Param_Cards.ContainsKey(var))
                     {
                         list.Add(Local_Param_Cards[var]);
                         Local_Param_Cards.Remove(var);
                     }
                     return list;
+
                 case "Shufle":
                     for (int i = 0; i < list.Count; i++)
                     {
@@ -75,46 +117,7 @@ namespace Compiler
                         list[d] = card;
                     }
                     return list;
-                case "Find":
-                    string[] parts;
-                    if (Source[2].Contains("=="))
-                    {
-                        parts = Source[2].Split("==");
-                        for (int i = 0; i < list.Count; i++)
-                        {
-                            if (process.RemoveSpace(parts[0]) == "Type" && list[i].Type.ToString() == process.RemoveSpace(parts[1]))
-                            {
-                                Local_Param_Cards[var] = list[i];
-                                break;
-                            }
-                            if (process.RemoveSpace(parts[0]) == "Faction" && list[i].Faction == process.RemoveSpace(parts[1]))
-                            {
-                                Local_Param_Cards[var] = list[i];
-                                break;
-                            }
-                            if (process.RemoveSpace(parts[0]) == "Power" && list[i].Power.ToString() == process.RemoveSpace(parts[1]))
-                            {
-                                Local_Param_Cards[var] = list[i];
-                                break;
-                            }
-                        }
-                    }
-                    for (int i = 0; i < list.Count; i++)
-                    {
-                        if(Source[2].Contains("Power"))
-                        {
-                            string[] veri = Source[2].Split("Power");
-                            veri[0] = list[i].Power.ToString();
-                            if (process.Compare(veri[0] + veri[1], 0))
-                            {
-                                Local_Param_Cards[var] = list[i];
-                                break;
-                            }
-                        }
-                    }
-                    
-                    
-                    return list;
+
                 case "Push":
                     if (Local_Param_Cards.ContainsKey(var))
                     {
@@ -122,13 +125,15 @@ namespace Compiler
                         Local_Param_Cards.Remove(var);
                     }
                     return list;
+
                 case "SendBottom":
                     if (Local_Param_Cards.ContainsKey(var))
                     {
-                        list[list.Count-1] = Local_Param_Cards[var];
+                        list[list.Count - 1] = Local_Param_Cards[var];
                         Local_Param_Cards.Remove(var);
                     }
                     return list;
+
                 case "Remove":
                     if (Local_Param_Cards.ContainsKey(var))
                     {
@@ -136,42 +141,205 @@ namespace Compiler
                         Local_Param_Cards.Remove(var);
                     }
                     return list;
-                case "TargetPowerSum":
-                    for(int i = 0; i< list.Count;i++)
+
+                case "Find":
+                    string[] parts;
+                    if (Instruntions[instruccion].Contains("=="))
                     {
-                        if(list[i] != null)
+                        parts = Instruntions[instruccion].Split("==");
+                        for (int i = 0; i < list.Count; i++)
                         {
-                            list[i].Power++;
+                            if (cardCreator.RemoveSpace(parts[0].Split("|")[3]) == "Type" && list[i].Type.ToString() == cardCreator.CreateString(cardCreator.RemoveSpace(parts[1]), 0))
+                            {
+                                Local_Param_Cards[parts[0].Split("|")[2]] = list[i];
+                                break;
+                            }
+                            if (cardCreator.RemoveSpace(parts[0].Split("|")[3]) == "Faction" && list[i].Faction == cardCreator.CreateString(cardCreator.RemoveSpace(parts[1]), 0))
+                            {
+                                Local_Param_Cards[parts[0].Split("|")[2]] = list[i];
+                                break;
+                            }
+                            if (cardCreator.RemoveSpace(parts[0].Split("|")[3]) == "Power" && list[i].Power.ToString() == cardCreator.RemoveSpace(parts[1]))
+                            {
+                                Local_Param_Cards[parts[0].Split("|")[2]] = list[i];
+                                break;
+                            }
                         }
                     }
                     return list;
-                case "TargetPowerRest":
+
+                case "NumVar":
+                    string[] N = Instruntions[instruccion].Split('|');
+                    cardCreator.NumberMaker(N[2], 0);
+                    return list;
+
+                case "StrVar":
+                    string[] S = Instruntions[instruccion].Split('|');
+                    cardCreator.StringMaker(S[2], 0);
+                    return list;
+
+                case "BoolVar":
+                    string[] B = Instruntions[instruccion].Split('|');
+                    cardCreator.BoolMaker(B[2], 0);
+                    return list;
+
+                case "for":
+                    instruccion++;
+                    int s = instruccion;
                     for (int i = 0; i < list.Count; i++)
                     {
-                        if (list[i] != null)
+                        instruccion = s;
+                        UnityEngine.Debug.Log(list.Count);
+                        while (instruccion < Instruntions.Count)
                         {
-                            list[i].Power--;
-                            UnityEngine.Debug.Log(list[i].Power);
+                            string[] W = Instruntions[instruccion].Split('|');
+                            if (W[0].Contains("while"))
+                            {
+                                while (cardCreator.Compare(W[1], 0))
+                                {
+                                    instruccion++;
+                                    if (Instruntions[instruccion].Contains("Target"))
+                                    {
+                                        list[i] = TargetFunction(list[i], Instruntions[instruccion].Split('|')[0], Instruntions[instruccion].Split('|')[2]);
+                                    }
+                                    else
+                                    {
+                                        string instrucion = Instruntions[instruccion];
+                                        if (instrucion != "")
+                                        {
+                                            string[] part = instrucion.Split('|');
+                                            if (part.Length == 3) DeterminateList(part[1], GameObject.FindGameObjectWithTag("Admin").GetComponent<GameManager>().context, part[0], part[2]);
+                                            else DeterminateList(part[1], GameObject.FindGameObjectWithTag("Admin").GetComponent<GameManager>().context, part[0]);
+                                        }
+                                    }
+                                }
+                                if (Source[1] == "true") break;
+                            }
+                            else
+                            {
+                                if (Instruntions[instruccion].Contains("Target"))
+                                {
+                                    list[i] = TargetFunction(list[i], Instruntions[instruccion].Split('|')[0], Instruntions[instruccion].Split('|')[2]);
+                                }
+                                else
+                                {
+                                    string instrucion = Instruntions[instruccion];
+                                    if (instrucion != "")
+                                    {
+                                        string[] part = instrucion.Split('|');
+                                        if (part.Length == 3) DeterminateList(part[1], GameObject.FindGameObjectWithTag("Admin").GetComponent<GameManager>().context, part[0], part[2]);
+                                        else DeterminateList(part[1], GameObject.FindGameObjectWithTag("Admin").GetComponent<GameManager>().context, part[0]);
+                                    }
+                                }
+                                if (Source[1] == "true") break;
+                            }
+                            instruccion++;
                         }
                     }
                     return list;
             }
-            return null;
+            return list;
+
+            GeneralCard TargetFunction(GeneralCard Card, string action, string value = " ")
+            {
+                if (Source[2].Contains("==") && (Card.Type == CardClass.Plata || Card.Type == CardClass.Oro))
+                {
+                    string[] parts = Source[2].Split("==");
+                    if (cardCreator.RemoveSpace(parts[0]) == "Name" && Card.Name.ToString() == cardCreator.CreateString(cardCreator.RemoveSpace(parts[1]), 0))
+                    {
+                        Card = PowerChance(Card, action, value);
+                    }
+                    if (cardCreator.RemoveSpace(parts[0]) == "Type" && Card.Type.ToString() == cardCreator.CreateString(cardCreator.RemoveSpace(parts[1]), 0))
+                    {
+                        Card = PowerChance(Card, action, value);
+                    }
+                    if (cardCreator.RemoveSpace(parts[0]) == "Faction" && Card.Faction == cardCreator.CreateString(cardCreator.RemoveSpace(parts[1]), 0))
+                    {
+                        Card = PowerChance(Card, action, value);
+                    }
+                    if (cardCreator.RemoveSpace(parts[0]) == "Power" && Card.Power.ToString() == cardCreator.ArithmeticOperations(parts[1], 0))
+                    {
+                        Card = PowerChance(Card, action, value);
+                    }
+                }
+                else if (Source[2].Contains("<=") && (Card.Type == CardClass.Plata || Card.Type == CardClass.Oro))
+                {
+                    string[] parts = Source[2].Split("<=");
+                    if (cardCreator.RemoveSpace(parts[0]) == "Power" && cardCreator.Compare(Card.Power.ToString() + " <= " + parts[1], 0))
+                    {
+                        Card = PowerChance(Card, action, value);
+                    }
+                }
+                else if (Source[2].Contains("<") && (Card.Type == CardClass.Plata || Card.Type == CardClass.Oro))
+                {
+                    string[] parts = Source[2].Split("<");
+                    if (cardCreator.RemoveSpace(parts[0]) == "Power" && cardCreator.Compare(Card.Power.ToString() + "<" + parts[1], 0))
+                    {
+                        Card = PowerChance(Card, action, value);
+                    }
+                }
+                else if (Source[2].Contains(">=") && (Card.Type == CardClass.Plata || Card.Type == CardClass.Oro))
+                {
+                    string[] parts = Source[2].Split(">=");
+                    if (cardCreator.RemoveSpace(parts[0]) == "Power" && cardCreator.Compare(Card.Power.ToString() + ">=" + parts[1], 0))
+                    {
+                        Card = PowerChance(Card, action, value);
+                    }
+                }
+                else if (Source[2].Contains(">") && (Card.Type == CardClass.Plata || Card.Type == CardClass.Oro))
+                {
+                    string[] parts = Source[2].Split(">");
+                    if (cardCreator.RemoveSpace(parts[0]) == "Power" && cardCreator.Compare(Card.Power.ToString() + ">" + parts[1], 0))
+                    {
+                        Card = PowerChance(Card, action, value);
+                    }
+                }
+
+                return Card;
+            }
+            GeneralCard PowerChance(GeneralCard card, string action, string value = " ")
+            {
+                cardCreator.NumberValue["Temp"] = card.Power.ToString();
+                string newPower = " ";
+                if (action == "TargetPowerSum")
+                {
+                    newPower = cardCreator.ArithmeticOperations("Temp++", 0);
+                }
+                if (action == "TargetPowerRest")
+                {
+                    newPower = cardCreator.ArithmeticOperations("Temp--", 0);
+                }
+                if (action == "TargetPowerRestTo")
+                {
+                    newPower = cardCreator.ArithmeticOperations("Temp-=" + value, 0);
+                }
+                if (action == "TargetPowerSumTo")
+                {
+                    newPower = cardCreator.ArithmeticOperations("Temp+=" + value, 0);
+                }
+                if (action == "TargetAssingTo")
+                {
+                    newPower = cardCreator.ArithmeticOperations("Temp=" + value, 0);
+                }
+                if (newPower != " ") card.Power = int.Parse(newPower);
+                cardCreator.NumberValue.Remove("Temp");
+                return card;
+            }
         }
-        public void DeterminateList(string lista,Context context,string instruction,string var = " ")
+        public void DeterminateList(string lista, Context context, string instruction, string var = " ")
         {
-            string list = process.VerificateContextList(lista);
+            string list = cardCreator.VerificateContextList(lista);
             if (list != " ")
             {
                 if (list == "Hand" || (list == "Source" && Source[0].Contains("hand")))
                 {
-                    if(card.TriggerPlayer == 1 || (list == "Source" && Source[0] == "hand"))
+                    if (card.TriggerPlayer == 1 || (list == "Source" && Source[0] == "hand"))
                     {
-                        context.HandOfPlayer_1 = EjecutarEfecto(context.HandOfPlayer_1,instruction,var);
+                        context.HandOfPlayer_1 = EjecutarEfecto(context.HandOfPlayer_1, instruction, var);
                         context.GameManager.deck1.Hand = CopyList(context.HandOfPlayer_1, context.GameManager.deck1.Hand);
                         for (int i = 0; i < context.GameManager.deck1.Hand.Length; i++)
                         {
-                            if(context.GameManager.deck1.Hand[i] != null)
+                            if (context.GameManager.deck1.Hand[i] != null)
                             {
                                 context.GameManager.deck1.HandPosition(i);
                             }
@@ -189,7 +357,7 @@ namespace Compiler
                             }
                         }
                     }
-                    else if(card.TriggerPlayer == 2 || (list == "Source" && Source[0] == "hand"))
+                    else if (card.TriggerPlayer == 2 || (list == "Source" && Source[0] == "hand"))
                     {
                         context.HandOfPlayer_2 = EjecutarEfecto(context.HandOfPlayer_2, instruction, var);
                         context.GameManager.deck2.Hand = CopyList(context.HandOfPlayer_2, context.GameManager.deck2.Hand);
@@ -215,7 +383,7 @@ namespace Compiler
 
                         }
                     }
-                }                    
+                }
                 if (list == "Deck" || (list == "Source" && Source[0].Contains("deck")))
                 {
                     if (card.TriggerPlayer == 1 || (list == "Source" && Source[0] == "deck"))
@@ -233,7 +401,7 @@ namespace Compiler
                         context.DeckOfPlayer_2 = EjecutarEfecto(context.DeckOfPlayer_2, instruction, var);
                         context.GameManager.deck2.Mazo = CopyList(context.DeckOfPlayer_2, context.GameManager.deck1.Mazo);
                     }
-                    else if (card.TriggerPlayer == 2 || (list == "Source" && Source[0] == "deck"))
+                    else if (card.TriggerPlayer == 2 || (list == "Source" && Source[0] == "otherdeck"))
                     {
                         context.DeckOfPlayer_1 = EjecutarEfecto(context.DeckOfPlayer_1, instruction, var);
                         context.GameManager.deck1.Mazo = CopyList(context.DeckOfPlayer_1, context.GameManager.deck1.Mazo);
@@ -244,30 +412,30 @@ namespace Compiler
                     if (card.TriggerPlayer == 1 || (list == "Source" && Source[0] == "graveyard"))
                     {
                         context.GraveyardOfPlayer_1 = EjecutarEfecto(context.GraveyardOfPlayer_1, instruction, var);
-                        context.GameManager.deck1.Graveyard = CopyList(context.GraveyardOfPlayer_1, context.GameManager.deck1.Graveyard);
+                        context.GameManager.deck1.Graveyard = (CopyList(context.GraveyardOfPlayer_1, context.GameManager.deck1.Graveyard.ToArray())).ToList();
                     }
-                    else if (card.TriggerPlayer == 2 || (list == "Source" && Source[0] == "othergraveyard"))
+                    else if (card.TriggerPlayer == 1 || (list == "Source" && Source[0] == "othergraveyard"))
                     {
-                        context.GraveyardOfPlayer_1 = EjecutarEfecto(context.GraveyardOfPlayer_1, instruction, var);
-                        context.GameManager.deck1.Graveyard = CopyList(context.GraveyardOfPlayer_1, context.GameManager.deck1.Graveyard);
+                        context.GraveyardOfPlayer_2 = EjecutarEfecto(context.GraveyardOfPlayer_2, instruction, var);
+                        context.GameManager.deck2.Graveyard = (CopyList(context.GraveyardOfPlayer_2, context.GameManager.deck1.Graveyard.ToArray())).ToList();
                     }
                     else if (card.TriggerPlayer == 2 || (list == "Source" && Source[0] == "graveyard"))
                     {
                         context.GraveyardOfPlayer_2 = EjecutarEfecto(context.GraveyardOfPlayer_2, instruction, var);
-                        context.GameManager.deck2.Graveyard = CopyList(context.GraveyardOfPlayer_2, context.GameManager.deck2.Graveyard);
+                        context.GameManager.deck2.Graveyard = (CopyList(context.GraveyardOfPlayer_2, context.GameManager.deck2.Graveyard.ToArray())).ToList();
                     }
                     else if (card.TriggerPlayer == 2 || (list == "Source" && Source[0] == "othergraveyard"))
                     {
                         context.GraveyardOfPlayer_1 = EjecutarEfecto(context.GraveyardOfPlayer_1, instruction, var);
-                        context.GameManager.deck1.Graveyard = CopyList(context.GraveyardOfPlayer_1, context.GameManager.deck2.Graveyard);
+                        context.GameManager.deck1.Graveyard = (CopyList(context.GraveyardOfPlayer_1, context.GameManager.deck1.Graveyard.ToArray())).ToList();
                     }
                 }
                 if (list == "Field" || (list == "Source" && Source[0].Contains("field")))
                 {
                     if (card.TriggerPlayer == 1 || (list == "Source" && Source[0] == "field"))
-                    {            
+                    {
                         context.FieldOfPlayer_1 = EjecutarEfecto(context.FieldOfPlayer_1, instruction, var);
-                        context.GameManager.deck1.Field = CopyList(context.FieldOfPlayer_1,context.GameManager.deck1.Field);
+                        context.GameManager.deck1.Field = CopyList(context.FieldOfPlayer_1, context.GameManager.deck1.Field);
                     }
                     else if (card.TriggerPlayer == 1 || (list == "Source" && Source[0] == "otherfield"))
                     {
@@ -292,34 +460,38 @@ namespace Compiler
                     context.Board = EjecutarEfecto(context.Board, instruction, var);
                     context.GameManager.Board = CopyList(context.Board, context.GameManager.Board);
                 }
-
             }
         }
         public GameObject[] CopyList(List<GeneralCard> cards, GameObject[] Array)
         {
-            for(int i = 0;i < Array.Length; i++)
+
+            for (int i = 0; i < Array.Length; i++)
             {
-                if(Array[i] != null)
+                if (Array[i] != null)
                 {
                     if (!cards.Contains(Array[i].GetComponent<GeneralCard>()))
                     {
-                        UnityEngine.Object.Destroy(Array[i]);
+                        if (Array[i].GetComponent<GeneralCard>().players == 1) GameObject.FindGameObjectWithTag("Admin").GetComponent<GameManager>().deck1.Graveyard.Add(Array[i]);
+                        if (Array[i].GetComponent<GeneralCard>().players == 2) GameObject.FindGameObjectWithTag("Admin").GetComponent<GameManager>().deck2.Graveyard.Add(Array[i]);
                         Array[i] = null;
                     }
                 }
             }
-            for(int i = 0; i < Array.Length; i++)
+
+            for (int i = 0; i < Array.Length; i++)
             {
                 Array[i] = null;
             }
+
             int s = 0;
-            foreach(GeneralCard card in cards)
+            foreach (GeneralCard card in cards)
             {
+                if (card.players == 1 && GameObject.FindGameObjectWithTag("Admin").GetComponent<GameManager>().deck1.Graveyard.Contains(card.gameObject)) GameObject.FindGameObjectWithTag("Admin").GetComponent<GameManager>().deck1.Graveyard.Remove(card.gameObject);
+                if (card.players == 2 && GameObject.FindGameObjectWithTag("Admin").GetComponent<GameManager>().deck2.Graveyard.Contains(card.gameObject)) GameObject.FindGameObjectWithTag("Admin").GetComponent<GameManager>().deck2.Graveyard.Remove(card.gameObject);
                 Array[s] = card.gameObject;
                 s++;
             }
             return Array;
         }
     }
-
 }
